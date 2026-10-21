@@ -1,0 +1,2717 @@
+{
+  "scope": "Window-ID retrieval on one open film and one trailer; not full-video temporal grounding or production quality.",
+  "label_provenance": "Agent-authored development labels based on inspection of timestamped midpoint-frame contact sheets. No independent human annotation. Bilingual forms share scene intents.",
+  "query_file_sha256": "87a43004a075165b13c72225dd944d9a54b3413e6d4cf544b2740628b344024c",
+  "collection_hash": "f25f2c99d3d371c1be8d3137a22393404a368d2e7d7a5dae53855273ce766683",
+  "scene_intents": 15,
+  "bilingual_query_forms": 30,
+  "segments": 132,
+  "assets": 2,
+  "encoder_fingerprint": "80b4db32f7e6459fb37c75eee1ff0e3cd5e01863bc418b2b947f973dd60b10e9",
+  "model_revision": "9f2f7e710d6d81056aa5c0a4f04764fec6bb7bda",
+  "query_encode_ms_p50": 30.494950005959254,
+  "query_encode_ms_p95": 32.869170001504244,
+  "metrics": {
+    "bm25": {
+      "MRR@10": 0.10865079365079365,
+      "set_recall@5": 0.062037037037037036,
+      "ranking_ms_p50_cached_query": 0.13904999650549144
+    },
+    "dense_image": {
+      "MRR@10": 0.9319444444444446,
+      "set_recall@5": 0.7037037037037037,
+      "ranking_ms_p50_cached_query": 0.20745000074384734
+    },
+    "dense_text": {
+      "MRR@10": 0.10911375661375661,
+      "set_recall@5": 0.07222222222222222,
+      "ranking_ms_p50_cached_query": 0.19269999756943434
+    },
+    "dense_joint": {
+      "MRR@10": 0.7908730158730158,
+      "set_recall@5": 0.600462962962963,
+      "ranking_ms_p50_cached_query": 0.2151000007870607
+    },
+    "rrf_joint": {
+      "MRR@10": 0.6000925925925925,
+      "set_recall@5": 0.3907407407407407,
+      "ranking_ms_p50_cached_query": 0.22610000451095402
+    }
+  },
+  "details": [
+    {
+      "system": "bm25",
+      "intent": "city",
+      "language": "en",
+      "query": "A futuristic city skyline with many tall towers",
+      "ranked": [
+        "tears_0003",
+        "sintel_0006",
+        "tears_0061",
+        "tears_0049",
+        "tears_0065",
+        "tears_0093",
+        "tears_0032",
+        "tears_0060"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "bm25",
+      "intent": "city",
+      "language": "zh",
+      "query": "未来城市的高楼天际线",
+      "ranked": [],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "engines",
+      "language": "en",
+      "query": "Rocket engine nozzles and bright exhaust flames",
+      "ranked": [
+        "tears_0047",
+        "tears_0048",
+        "tears_0000",
+        "tears_0008",
+        "tears_0059",
+        "tears_0053",
+        "tears_0004"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "engines",
+      "language": "zh",
+      "query": "火箭发动机喷口与明亮尾焰",
+      "ranked": [],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "bridge",
+      "language": "en",
+      "query": "A young man and woman talking on a bridge beside a canal",
+      "ranked": [
+        "tears_0059",
+        "tears_0047",
+        "tears_0048",
+        "tears_0021",
+        "tears_0001",
+        "tears_0003",
+        "tears_0008",
+        "sintel_0006",
+        "tears_0061",
+        "tears_0064"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "bm25",
+      "intent": "bridge",
+      "language": "zh",
+      "query": "年轻男女站在运河边的桥上交谈",
+      "ranked": [],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "brain",
+      "language": "en",
+      "query": "A human brain placed on a dish in a laboratory",
+      "ranked": [
+        "tears_0001",
+        "tears_0003",
+        "tears_0054",
+        "sintel_0006",
+        "tears_0061",
+        "tears_0064",
+        "tears_0049",
+        "tears_0065",
+        "tears_0093",
+        "tears_0004"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "brain",
+      "language": "zh",
+      "query": "实验室盘子中放着一颗大脑",
+      "ranked": [],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "newspaper",
+      "language": "en",
+      "query": "A close-up of hands holding a newspaper",
+      "ranked": [
+        "tears_0057",
+        "tears_0032",
+        "tears_0003",
+        "sintel_0002",
+        "sintel_0006",
+        "tears_0061",
+        "tears_0049",
+        "tears_0065",
+        "tears_0093",
+        "tears_0060"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "newspaper",
+      "language": "zh",
+      "query": "双手拿着报纸的特写",
+      "ranked": [],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "sniper",
+      "language": "en",
+      "query": "A person aiming a rifle through a scope",
+      "ranked": [
+        "tears_0003",
+        "sintel_0006",
+        "tears_0061",
+        "tears_0049",
+        "tears_0065",
+        "tears_0093",
+        "tears_0032",
+        "tears_0060"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "sniper",
+      "language": "zh",
+      "query": "人物通过瞄准镜举枪瞄准",
+      "ranked": [],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "holograms",
+      "language": "en",
+      "query": "A scientist surrounded by bright holographic computer screens",
+      "ranked": [
+        "tears_0003",
+        "sintel_0006",
+        "tears_0058",
+        "tears_0061",
+        "tears_0049",
+        "tears_0065",
+        "tears_0093",
+        "tears_0032",
+        "tears_0006",
+        "tears_0060"
+      ],
+      "first_relevant_rank": 5
+    },
+    {
+      "system": "bm25",
+      "intent": "holograms",
+      "language": "zh",
+      "query": "科学家被明亮的全息电脑屏幕包围",
+      "ranked": [],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "table",
+      "language": "en",
+      "query": "Several people sitting together around a table indoors",
+      "ranked": [
+        "tears_0003",
+        "sintel_0006",
+        "tears_0061",
+        "tears_0049",
+        "tears_0065",
+        "tears_0093",
+        "tears_0032",
+        "tears_0060"
+      ],
+      "first_relevant_rank": 7
+    },
+    {
+      "system": "bm25",
+      "intent": "table",
+      "language": "zh",
+      "query": "几个人围坐在室内的桌子旁",
+      "ranked": [],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "robot",
+      "language": "en",
+      "query": "A large robot walking through a city street",
+      "ranked": [
+        "tears_0003",
+        "sintel_0006",
+        "tears_0058",
+        "tears_0061",
+        "tears_0049",
+        "tears_0065",
+        "tears_0093",
+        "tears_0032",
+        "tears_0005",
+        "tears_0060"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "robot",
+      "language": "zh",
+      "query": "巨型机器人出现在城市街道上",
+      "ranked": [],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "hand",
+      "language": "en",
+      "query": "A woman showing a mechanical robotic hand",
+      "ranked": [
+        "tears_0003",
+        "sintel_0006",
+        "tears_0058",
+        "tears_0061",
+        "tears_0049",
+        "tears_0065",
+        "tears_0093",
+        "tears_0006",
+        "tears_0032",
+        "tears_0005"
+      ],
+      "first_relevant_rank": 4
+    },
+    {
+      "system": "bm25",
+      "intent": "hand",
+      "language": "zh",
+      "query": "女人展示机械手臂的画面",
+      "ranked": [],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "red_lens",
+      "language": "en",
+      "query": "A man wearing a glowing red mechanical eyepiece",
+      "ranked": [
+        "tears_0003",
+        "sintel_0006",
+        "tears_0061",
+        "tears_0049",
+        "tears_0065",
+        "tears_0093",
+        "tears_0032",
+        "tears_0060"
+      ],
+      "first_relevant_rank": 6
+    },
+    {
+      "system": "bm25",
+      "intent": "red_lens",
+      "language": "zh",
+      "query": "男人戴着发红光的机械目镜",
+      "ranked": [],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "running",
+      "language": "en",
+      "query": "A man running along a tree-lined city street",
+      "ranked": [
+        "tears_0003",
+        "sintel_0006",
+        "tears_0061",
+        "tears_0049",
+        "tears_0065",
+        "tears_0093",
+        "tears_0032",
+        "tears_0060"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "running",
+      "language": "zh",
+      "query": "男人沿着有树的城市街道奔跑",
+      "ranked": [],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "snow",
+      "language": "en",
+      "query": "A wide view of snowy mountain peaks",
+      "ranked": [
+        "tears_0032",
+        "tears_0003",
+        "sintel_0002",
+        "sintel_0006",
+        "tears_0061",
+        "tears_0049",
+        "tears_0065",
+        "tears_0093",
+        "tears_0060"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "snow",
+      "language": "zh",
+      "query": "白雪覆盖的群山远景",
+      "ranked": [],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "dragon",
+      "language": "en",
+      "query": "A small dragon flying with its wings spread",
+      "ranked": [
+        "tears_0003",
+        "sintel_0006",
+        "tears_0061",
+        "tears_0049",
+        "tears_0065",
+        "tears_0093",
+        "tears_0032",
+        "tears_0060"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "dragon",
+      "language": "zh",
+      "query": "一只小龙展开双翼飞翔",
+      "ranked": [],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "bm25",
+      "intent": "desert",
+      "language": "en",
+      "query": "A wide desert landscape with sand dunes",
+      "ranked": [
+        "tears_0003",
+        "sintel_0006",
+        "tears_0061",
+        "tears_0049",
+        "tears_0065",
+        "tears_0093",
+        "tears_0032",
+        "tears_0060"
+      ],
+      "first_relevant_rank": 2
+    },
+    {
+      "system": "bm25",
+      "intent": "desert",
+      "language": "zh",
+      "query": "辽阔的沙漠沙丘景观",
+      "ranked": [],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_image",
+      "intent": "city",
+      "language": "en",
+      "query": "A futuristic city skyline with many tall towers",
+      "ranked": [
+        "tears_0003",
+        "tears_0017",
+        "tears_0001",
+        "tears_0073",
+        "tears_0058",
+        "tears_0072",
+        "tears_0104",
+        "tears_0037",
+        "tears_0034",
+        "tears_0002"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "city",
+      "language": "zh",
+      "query": "未来城市的高楼天际线",
+      "ranked": [
+        "tears_0003",
+        "tears_0017",
+        "tears_0072",
+        "tears_0058",
+        "tears_0007",
+        "tears_0104",
+        "tears_0080",
+        "tears_0039",
+        "tears_0023",
+        "tears_0073"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "engines",
+      "language": "en",
+      "query": "Rocket engine nozzles and bright exhaust flames",
+      "ranked": [
+        "tears_0002",
+        "tears_0001",
+        "tears_0104",
+        "tears_0103",
+        "tears_0082",
+        "tears_0118",
+        "tears_0077",
+        "tears_0095",
+        "tears_0088",
+        "tears_0018"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "engines",
+      "language": "zh",
+      "query": "火箭发动机喷口与明亮尾焰",
+      "ranked": [
+        "tears_0002",
+        "tears_0104",
+        "tears_0001",
+        "tears_0103",
+        "tears_0077",
+        "tears_0082",
+        "tears_0095",
+        "tears_0118",
+        "tears_0093",
+        "tears_0057"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "bridge",
+      "language": "en",
+      "query": "A young man and woman talking on a bridge beside a canal",
+      "ranked": [
+        "tears_0004",
+        "tears_0005",
+        "tears_0006",
+        "tears_0052",
+        "tears_0085",
+        "tears_0059",
+        "tears_0045",
+        "tears_0044",
+        "tears_0046",
+        "tears_0054"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "bridge",
+      "language": "zh",
+      "query": "年轻男女站在运河边的桥上交谈",
+      "ranked": [
+        "tears_0004",
+        "tears_0005",
+        "tears_0006",
+        "tears_0052",
+        "tears_0085",
+        "tears_0045",
+        "tears_0046",
+        "tears_0044",
+        "tears_0059",
+        "tears_0086"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "brain",
+      "language": "en",
+      "query": "A human brain placed on a dish in a laboratory",
+      "ranked": [
+        "tears_0009",
+        "tears_0010",
+        "tears_0090",
+        "tears_0007",
+        "tears_0076",
+        "tears_0014",
+        "tears_0051",
+        "tears_0008",
+        "tears_0066",
+        "tears_0034"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "brain",
+      "language": "zh",
+      "query": "实验室盘子中放着一颗大脑",
+      "ranked": [
+        "tears_0009",
+        "tears_0010",
+        "tears_0090",
+        "tears_0007",
+        "tears_0076",
+        "tears_0051",
+        "tears_0066",
+        "tears_0062",
+        "tears_0048",
+        "tears_0070"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "newspaper",
+      "language": "en",
+      "query": "A close-up of hands holding a newspaper",
+      "ranked": [
+        "tears_0013",
+        "tears_0016",
+        "tears_0061",
+        "tears_0067",
+        "tears_0101",
+        "tears_0081",
+        "tears_0055",
+        "tears_0118",
+        "tears_0099",
+        "tears_0065"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "newspaper",
+      "language": "zh",
+      "query": "双手拿着报纸的特写",
+      "ranked": [
+        "tears_0013",
+        "tears_0016",
+        "tears_0061",
+        "tears_0081",
+        "tears_0057",
+        "tears_0077",
+        "tears_0014",
+        "tears_0056",
+        "tears_0055",
+        "tears_0067"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "sniper",
+      "language": "en",
+      "query": "A person aiming a rifle through a scope",
+      "ranked": [
+        "tears_0056",
+        "tears_0019",
+        "tears_0016",
+        "tears_0023",
+        "tears_0033",
+        "tears_0015",
+        "tears_0024",
+        "tears_0020",
+        "tears_0021",
+        "tears_0057"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "sniper",
+      "language": "zh",
+      "query": "人物通过瞄准镜举枪瞄准",
+      "ranked": [
+        "tears_0056",
+        "tears_0019",
+        "tears_0016",
+        "tears_0023",
+        "tears_0033",
+        "tears_0015",
+        "tears_0024",
+        "tears_0020",
+        "tears_0057",
+        "tears_0021"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "holograms",
+      "language": "en",
+      "query": "A scientist surrounded by bright holographic computer screens",
+      "ranked": [
+        "tears_0090",
+        "tears_0070",
+        "tears_0049",
+        "tears_0058",
+        "tears_0034",
+        "tears_0062",
+        "tears_0050",
+        "tears_0066",
+        "tears_0036",
+        "tears_0063"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "holograms",
+      "language": "zh",
+      "query": "科学家被明亮的全息电脑屏幕包围",
+      "ranked": [
+        "tears_0070",
+        "tears_0049",
+        "tears_0058",
+        "tears_0090",
+        "tears_0062",
+        "tears_0066",
+        "tears_0034",
+        "tears_0050",
+        "tears_0063",
+        "tears_0008"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "table",
+      "language": "en",
+      "query": "Several people sitting together around a table indoors",
+      "ranked": [
+        "tears_0058",
+        "tears_0094",
+        "tears_0079",
+        "tears_0040",
+        "tears_0041",
+        "tears_0038",
+        "tears_0014",
+        "tears_0112",
+        "tears_0049",
+        "tears_0113"
+      ],
+      "first_relevant_rank": 2
+    },
+    {
+      "system": "dense_image",
+      "intent": "table",
+      "language": "zh",
+      "query": "几个人围坐在室内的桌子旁",
+      "ranked": [
+        "tears_0094",
+        "tears_0058",
+        "tears_0079",
+        "tears_0041",
+        "tears_0049",
+        "tears_0038",
+        "tears_0016",
+        "tears_0040",
+        "tears_0014",
+        "tears_0032"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "robot",
+      "language": "en",
+      "query": "A large robot walking through a city street",
+      "ranked": [
+        "tears_0037",
+        "tears_0051",
+        "tears_0047",
+        "tears_0085",
+        "tears_0097",
+        "tears_0096",
+        "tears_0061",
+        "tears_0043",
+        "tears_0039",
+        "tears_0076"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "robot",
+      "language": "zh",
+      "query": "巨型机器人出现在城市街道上",
+      "ranked": [
+        "tears_0037",
+        "tears_0051",
+        "tears_0047",
+        "tears_0085",
+        "tears_0096",
+        "tears_0097",
+        "tears_0039",
+        "tears_0079",
+        "tears_0061",
+        "tears_0087"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "hand",
+      "language": "en",
+      "query": "A woman showing a mechanical robotic hand",
+      "ranked": [
+        "tears_0061",
+        "tears_0064",
+        "tears_0091",
+        "tears_0059",
+        "tears_0060",
+        "tears_0067",
+        "tears_0006",
+        "tears_0076",
+        "tears_0065",
+        "tears_0013"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "hand",
+      "language": "zh",
+      "query": "女人展示机械手臂的画面",
+      "ranked": [
+        "tears_0061",
+        "tears_0064",
+        "tears_0091",
+        "tears_0059",
+        "tears_0099",
+        "tears_0060",
+        "tears_0067",
+        "tears_0006",
+        "tears_0068",
+        "tears_0076"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "red_lens",
+      "language": "en",
+      "query": "A man wearing a glowing red mechanical eyepiece",
+      "ranked": [
+        "tears_0093",
+        "tears_0057",
+        "tears_0068",
+        "tears_0071",
+        "tears_0066",
+        "tears_0070",
+        "tears_0062",
+        "tears_0048",
+        "tears_0010",
+        "tears_0050"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "red_lens",
+      "language": "zh",
+      "query": "男人戴着发红光的机械目镜",
+      "ranked": [
+        "tears_0057",
+        "tears_0068",
+        "tears_0093",
+        "tears_0071",
+        "tears_0066",
+        "tears_0070",
+        "tears_0062",
+        "tears_0050",
+        "tears_0010",
+        "tears_0048"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "running",
+      "language": "en",
+      "query": "A man running along a tree-lined city street",
+      "ranked": [
+        "tears_0044",
+        "tears_0045",
+        "tears_0054",
+        "tears_0043",
+        "tears_0046",
+        "tears_0086",
+        "tears_0077",
+        "tears_0039",
+        "tears_0052",
+        "tears_0069"
+      ],
+      "first_relevant_rank": 8
+    },
+    {
+      "system": "dense_image",
+      "intent": "running",
+      "language": "zh",
+      "query": "男人沿着有树的城市街道奔跑",
+      "ranked": [
+        "tears_0044",
+        "tears_0045",
+        "tears_0039",
+        "tears_0077",
+        "tears_0043",
+        "tears_0046",
+        "tears_0054",
+        "tears_0081",
+        "tears_0004",
+        "tears_0052"
+      ],
+      "first_relevant_rank": 3
+    },
+    {
+      "system": "dense_image",
+      "intent": "snow",
+      "language": "en",
+      "query": "A wide view of snowy mountain peaks",
+      "ranked": [
+        "sintel_0000",
+        "sintel_0006",
+        "tears_0014",
+        "tears_0001",
+        "tears_0077",
+        "tears_0012",
+        "tears_0118",
+        "tears_0025",
+        "tears_0083",
+        "tears_0000"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "snow",
+      "language": "zh",
+      "query": "白雪覆盖的群山远景",
+      "ranked": [
+        "sintel_0000",
+        "sintel_0006",
+        "sintel_0007",
+        "tears_0021",
+        "tears_0016",
+        "tears_0020",
+        "tears_0014",
+        "tears_0077",
+        "tears_0017",
+        "tears_0024"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "dragon",
+      "language": "en",
+      "query": "A small dragon flying with its wings spread",
+      "ranked": [
+        "sintel_0005",
+        "sintel_0004",
+        "tears_0095",
+        "tears_0025",
+        "tears_0036",
+        "tears_0073",
+        "tears_0082",
+        "tears_0083",
+        "tears_0000",
+        "sintel_0000"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "dragon",
+      "language": "zh",
+      "query": "一只小龙展开双翼飞翔",
+      "ranked": [
+        "sintel_0005",
+        "sintel_0004",
+        "tears_0095",
+        "tears_0073",
+        "tears_0036",
+        "tears_0025",
+        "tears_0083",
+        "tears_0017",
+        "tears_0082",
+        "tears_0000"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "desert",
+      "language": "en",
+      "query": "A wide desert landscape with sand dunes",
+      "ranked": [
+        "sintel_0006",
+        "sintel_0000",
+        "sintel_0007",
+        "tears_0000",
+        "sintel_0004",
+        "tears_0003",
+        "tears_0119",
+        "tears_0014",
+        "tears_0121",
+        "sintel_0008"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_image",
+      "intent": "desert",
+      "language": "zh",
+      "query": "辽阔的沙漠沙丘景观",
+      "ranked": [
+        "sintel_0006",
+        "sintel_0000",
+        "sintel_0007",
+        "sintel_0004",
+        "tears_0003",
+        "tears_0014",
+        "tears_0121",
+        "tears_0119",
+        "tears_0000",
+        "tears_0001"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_text",
+      "intent": "city",
+      "language": "en",
+      "query": "A futuristic city skyline with many tall towers",
+      "ranked": [
+        "tears_0008",
+        "tears_0010",
+        "sintel_0002",
+        "sintel_0003",
+        "tears_0002",
+        "sintel_0001",
+        "tears_0070",
+        "tears_0060",
+        "tears_0058",
+        "tears_0006"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "city",
+      "language": "zh",
+      "query": "未来城市的高楼天际线",
+      "ranked": [
+        "sintel_0002",
+        "tears_0002",
+        "tears_0070",
+        "sintel_0001",
+        "tears_0008",
+        "sintel_0003",
+        "tears_0093",
+        "tears_0010",
+        "tears_0060",
+        "tears_0038"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "engines",
+      "language": "en",
+      "query": "Rocket engine nozzles and bright exhaust flames",
+      "ranked": [
+        "tears_0000",
+        "tears_0054",
+        "tears_0008",
+        "tears_0002",
+        "tears_0004",
+        "tears_0071",
+        "tears_0053",
+        "tears_0058",
+        "tears_0001",
+        "sintel_0004"
+      ],
+      "first_relevant_rank": 4
+    },
+    {
+      "system": "dense_text",
+      "intent": "engines",
+      "language": "zh",
+      "query": "火箭发动机喷口与明亮尾焰",
+      "ranked": [
+        "tears_0000",
+        "tears_0054",
+        "tears_0002",
+        "tears_0008",
+        "sintel_0001",
+        "sintel_0004",
+        "tears_0004",
+        "tears_0058",
+        "tears_0053",
+        "sintel_0002"
+      ],
+      "first_relevant_rank": 3
+    },
+    {
+      "system": "dense_text",
+      "intent": "bridge",
+      "language": "en",
+      "query": "A young man and woman talking on a bridge beside a canal",
+      "ranked": [
+        "tears_0021",
+        "tears_0041",
+        "sintel_0002",
+        "tears_0019",
+        "tears_0038",
+        "tears_0039",
+        "sintel_0004",
+        "tears_0002",
+        "tears_0004",
+        "tears_0093"
+      ],
+      "first_relevant_rank": 9
+    },
+    {
+      "system": "dense_text",
+      "intent": "bridge",
+      "language": "zh",
+      "query": "年轻男女站在运河边的桥上交谈",
+      "ranked": [
+        "tears_0021",
+        "sintel_0002",
+        "tears_0041",
+        "tears_0019",
+        "tears_0093",
+        "tears_0070",
+        "tears_0002",
+        "tears_0001",
+        "tears_0057",
+        "tears_0031"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "brain",
+      "language": "en",
+      "query": "A human brain placed on a dish in a laboratory",
+      "ranked": [
+        "tears_0010",
+        "sintel_0004",
+        "tears_0008",
+        "tears_0058",
+        "tears_0060",
+        "sintel_0001",
+        "tears_0001",
+        "tears_0041",
+        "tears_0093",
+        "tears_0063"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_text",
+      "intent": "brain",
+      "language": "zh",
+      "query": "实验室盘子中放着一颗大脑",
+      "ranked": [
+        "tears_0010",
+        "tears_0008",
+        "tears_0060",
+        "tears_0093",
+        "tears_0041",
+        "tears_0058",
+        "sintel_0004",
+        "sintel_0001",
+        "tears_0068",
+        "tears_0001"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_text",
+      "intent": "newspaper",
+      "language": "en",
+      "query": "A close-up of hands holding a newspaper",
+      "ranked": [
+        "tears_0058",
+        "tears_0093",
+        "sintel_0003",
+        "sintel_0004",
+        "tears_0069",
+        "tears_0070",
+        "sintel_0002",
+        "tears_0031",
+        "tears_0010",
+        "tears_0041"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "newspaper",
+      "language": "zh",
+      "query": "双手拿着报纸的特写",
+      "ranked": [
+        "tears_0058",
+        "sintel_0002",
+        "tears_0069",
+        "tears_0070",
+        "tears_0008",
+        "tears_0093",
+        "sintel_0001",
+        "tears_0031",
+        "tears_0010",
+        "tears_0002"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "sniper",
+      "language": "en",
+      "query": "A person aiming a rifle through a scope",
+      "ranked": [
+        "sintel_0006",
+        "sintel_0003",
+        "sintel_0004",
+        "tears_0093",
+        "tears_0071",
+        "tears_0031",
+        "tears_0060",
+        "sintel_0002",
+        "tears_0041",
+        "tears_0069"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "sniper",
+      "language": "zh",
+      "query": "人物通过瞄准镜举枪瞄准",
+      "ranked": [
+        "sintel_0006",
+        "sintel_0003",
+        "tears_0093",
+        "sintel_0002",
+        "tears_0031",
+        "tears_0071",
+        "tears_0008",
+        "sintel_0004",
+        "tears_0060",
+        "tears_0001"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "holograms",
+      "language": "en",
+      "query": "A scientist surrounded by bright holographic computer screens",
+      "ranked": [
+        "tears_0008",
+        "tears_0010",
+        "tears_0058",
+        "tears_0006",
+        "tears_0054",
+        "sintel_0004",
+        "sintel_0002",
+        "sintel_0003",
+        "tears_0004",
+        "tears_0060"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "holograms",
+      "language": "zh",
+      "query": "科学家被明亮的全息电脑屏幕包围",
+      "ranked": [
+        "tears_0008",
+        "tears_0010",
+        "sintel_0002",
+        "tears_0058",
+        "tears_0006",
+        "tears_0071",
+        "sintel_0003",
+        "tears_0054",
+        "sintel_0004",
+        "tears_0093"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "table",
+      "language": "en",
+      "query": "Several people sitting together around a table indoors",
+      "ranked": [
+        "tears_0021",
+        "tears_0093",
+        "sintel_0004",
+        "tears_0008",
+        "tears_0041",
+        "tears_0070",
+        "tears_0001",
+        "sintel_0001",
+        "sintel_0002",
+        "tears_0024"
+      ],
+      "first_relevant_rank": 5
+    },
+    {
+      "system": "dense_text",
+      "intent": "table",
+      "language": "zh",
+      "query": "几个人围坐在室内的桌子旁",
+      "ranked": [
+        "tears_0093",
+        "tears_0001",
+        "tears_0008",
+        "sintel_0004",
+        "tears_0021",
+        "tears_0070",
+        "tears_0041",
+        "sintel_0001",
+        "tears_0071",
+        "sintel_0003"
+      ],
+      "first_relevant_rank": 7
+    },
+    {
+      "system": "dense_text",
+      "intent": "robot",
+      "language": "en",
+      "query": "A large robot walking through a city street",
+      "ranked": [
+        "tears_0008",
+        "tears_0002",
+        "tears_0058",
+        "tears_0006",
+        "tears_0005",
+        "tears_0053",
+        "sintel_0002",
+        "tears_0010",
+        "sintel_0003",
+        "tears_0060"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "robot",
+      "language": "zh",
+      "query": "巨型机器人出现在城市街道上",
+      "ranked": [
+        "tears_0008",
+        "tears_0006",
+        "tears_0058",
+        "tears_0002",
+        "tears_0005",
+        "tears_0010",
+        "sintel_0002",
+        "tears_0053",
+        "tears_0060",
+        "tears_0071"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "hand",
+      "language": "en",
+      "query": "A woman showing a mechanical robotic hand",
+      "ranked": [
+        "tears_0058",
+        "tears_0005",
+        "tears_0008",
+        "tears_0010",
+        "tears_0060",
+        "tears_0053",
+        "tears_0041",
+        "tears_0039",
+        "sintel_0004",
+        "tears_0038"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "hand",
+      "language": "zh",
+      "query": "女人展示机械手臂的画面",
+      "ranked": [
+        "tears_0058",
+        "tears_0008",
+        "tears_0005",
+        "tears_0010",
+        "tears_0060",
+        "tears_0038",
+        "tears_0041",
+        "tears_0053",
+        "sintel_0002",
+        "tears_0004"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "red_lens",
+      "language": "en",
+      "query": "A man wearing a glowing red mechanical eyepiece",
+      "ranked": [
+        "tears_0058",
+        "tears_0010",
+        "tears_0008",
+        "tears_0006",
+        "sintel_0004",
+        "sintel_0002",
+        "sintel_0003",
+        "sintel_0006",
+        "tears_0005",
+        "tears_0066"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "red_lens",
+      "language": "zh",
+      "query": "男人戴着发红光的机械目镜",
+      "ranked": [
+        "tears_0008",
+        "tears_0058",
+        "tears_0010",
+        "sintel_0002",
+        "sintel_0003",
+        "sintel_0004",
+        "tears_0006",
+        "tears_0093",
+        "sintel_0006",
+        "tears_0041"
+      ],
+      "first_relevant_rank": 8
+    },
+    {
+      "system": "dense_text",
+      "intent": "running",
+      "language": "en",
+      "query": "A man running along a tree-lined city street",
+      "ranked": [
+        "tears_0071",
+        "tears_0002",
+        "sintel_0004",
+        "tears_0072",
+        "sintel_0003",
+        "tears_0056",
+        "tears_0070",
+        "tears_0041",
+        "tears_0093",
+        "sintel_0002"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "running",
+      "language": "zh",
+      "query": "男人沿着有树的城市街道奔跑",
+      "ranked": [
+        "tears_0071",
+        "tears_0002",
+        "tears_0072",
+        "sintel_0003",
+        "tears_0056",
+        "sintel_0004",
+        "tears_0041",
+        "sintel_0002",
+        "tears_0093",
+        "tears_0001"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "snow",
+      "language": "en",
+      "query": "A wide view of snowy mountain peaks",
+      "ranked": [
+        "sintel_0002",
+        "tears_0002",
+        "sintel_0001",
+        "sintel_0006",
+        "tears_0041",
+        "sintel_0003",
+        "tears_0093",
+        "tears_0071",
+        "tears_0010",
+        "tears_0001"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "snow",
+      "language": "zh",
+      "query": "白雪覆盖的群山远景",
+      "ranked": [
+        "sintel_0002",
+        "tears_0071",
+        "sintel_0001",
+        "tears_0002",
+        "tears_0041",
+        "tears_0093",
+        "sintel_0006",
+        "tears_0072",
+        "sintel_0003",
+        "sintel_0007"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "dragon",
+      "language": "en",
+      "query": "A small dragon flying with its wings spread",
+      "ranked": [
+        "tears_0010",
+        "tears_0054",
+        "sintel_0001",
+        "tears_0093",
+        "tears_0058",
+        "sintel_0004",
+        "tears_0041",
+        "sintel_0002",
+        "tears_0008",
+        "sintel_0006"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "dragon",
+      "language": "zh",
+      "query": "一只小龙展开双翼飞翔",
+      "ranked": [
+        "tears_0054",
+        "tears_0093",
+        "tears_0010",
+        "tears_0071",
+        "sintel_0001",
+        "sintel_0002",
+        "tears_0070",
+        "tears_0041",
+        "tears_0001",
+        "sintel_0004"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_text",
+      "intent": "desert",
+      "language": "en",
+      "query": "A wide desert landscape with sand dunes",
+      "ranked": [
+        "sintel_0002",
+        "tears_0002",
+        "sintel_0001",
+        "sintel_0003",
+        "tears_0071",
+        "tears_0070",
+        "tears_0041",
+        "tears_0093",
+        "sintel_0006",
+        "tears_0054"
+      ],
+      "first_relevant_rank": 9
+    },
+    {
+      "system": "dense_text",
+      "intent": "desert",
+      "language": "zh",
+      "query": "辽阔的沙漠沙丘景观",
+      "ranked": [
+        "sintel_0002",
+        "tears_0002",
+        "tears_0071",
+        "sintel_0001",
+        "tears_0093",
+        "sintel_0003",
+        "tears_0054",
+        "tears_0041",
+        "tears_0070",
+        "sintel_0007"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_joint",
+      "intent": "city",
+      "language": "en",
+      "query": "A futuristic city skyline with many tall towers",
+      "ranked": [
+        "tears_0058",
+        "tears_0001",
+        "tears_0017",
+        "tears_0034",
+        "tears_0072",
+        "tears_0073",
+        "tears_0003",
+        "tears_0037",
+        "tears_0104",
+        "tears_0007"
+      ],
+      "first_relevant_rank": 7
+    },
+    {
+      "system": "dense_joint",
+      "intent": "city",
+      "language": "zh",
+      "query": "未来城市的高楼天际线",
+      "ranked": [
+        "tears_0058",
+        "tears_0017",
+        "tears_0003",
+        "tears_0019",
+        "tears_0072",
+        "tears_0007",
+        "tears_0034",
+        "tears_0037",
+        "tears_0001",
+        "tears_0104"
+      ],
+      "first_relevant_rank": 3
+    },
+    {
+      "system": "dense_joint",
+      "intent": "engines",
+      "language": "en",
+      "query": "Rocket engine nozzles and bright exhaust flames",
+      "ranked": [
+        "tears_0002",
+        "tears_0001",
+        "tears_0104",
+        "tears_0103",
+        "tears_0082",
+        "tears_0118",
+        "tears_0058",
+        "tears_0000",
+        "tears_0077",
+        "tears_0095"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "engines",
+      "language": "zh",
+      "query": "火箭发动机喷口与明亮尾焰",
+      "ranked": [
+        "tears_0002",
+        "tears_0001",
+        "tears_0104",
+        "tears_0000",
+        "tears_0103",
+        "tears_0077",
+        "tears_0082",
+        "tears_0095",
+        "tears_0058",
+        "tears_0118"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "bridge",
+      "language": "en",
+      "query": "A young man and woman talking on a bridge beside a canal",
+      "ranked": [
+        "tears_0006",
+        "tears_0004",
+        "tears_0005",
+        "tears_0085",
+        "tears_0045",
+        "tears_0044",
+        "tears_0052",
+        "tears_0046",
+        "tears_0059",
+        "tears_0029"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "bridge",
+      "language": "zh",
+      "query": "年轻男女站在运河边的桥上交谈",
+      "ranked": [
+        "tears_0006",
+        "tears_0085",
+        "tears_0004",
+        "tears_0005",
+        "tears_0045",
+        "tears_0046",
+        "tears_0044",
+        "tears_0052",
+        "tears_0047",
+        "tears_0026"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "brain",
+      "language": "en",
+      "query": "A human brain placed on a dish in a laboratory",
+      "ranked": [
+        "tears_0009",
+        "tears_0010",
+        "tears_0090",
+        "tears_0007",
+        "tears_0058",
+        "tears_0076",
+        "tears_0014",
+        "tears_0051",
+        "tears_0008",
+        "tears_0066"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "brain",
+      "language": "zh",
+      "query": "实验室盘子中放着一颗大脑",
+      "ranked": [
+        "tears_0009",
+        "tears_0010",
+        "tears_0090",
+        "tears_0007",
+        "tears_0058",
+        "tears_0066",
+        "tears_0093",
+        "tears_0076",
+        "tears_0051",
+        "tears_0062"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "newspaper",
+      "language": "en",
+      "query": "A close-up of hands holding a newspaper",
+      "ranked": [
+        "tears_0013",
+        "tears_0058",
+        "tears_0016",
+        "tears_0101",
+        "tears_0081",
+        "tears_0005",
+        "tears_0055",
+        "tears_0067",
+        "tears_0118",
+        "tears_0099"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "newspaper",
+      "language": "zh",
+      "query": "双手拿着报纸的特写",
+      "ranked": [
+        "tears_0013",
+        "tears_0058",
+        "tears_0016",
+        "tears_0031",
+        "tears_0005",
+        "tears_0081",
+        "tears_0066",
+        "tears_0093",
+        "tears_0077",
+        "tears_0014"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "sniper",
+      "language": "en",
+      "query": "A person aiming a rifle through a scope",
+      "ranked": [
+        "tears_0019",
+        "tears_0016",
+        "tears_0023",
+        "tears_0033",
+        "tears_0015",
+        "tears_0056",
+        "tears_0020",
+        "tears_0024",
+        "tears_0081",
+        "tears_0017"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "sniper",
+      "language": "zh",
+      "query": "人物通过瞄准镜举枪瞄准",
+      "ranked": [
+        "tears_0019",
+        "tears_0056",
+        "tears_0016",
+        "tears_0033",
+        "tears_0023",
+        "tears_0015",
+        "tears_0024",
+        "tears_0020",
+        "tears_0081",
+        "tears_0017"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "holograms",
+      "language": "en",
+      "query": "A scientist surrounded by bright holographic computer screens",
+      "ranked": [
+        "tears_0090",
+        "tears_0036",
+        "tears_0058",
+        "tears_0062",
+        "tears_0070",
+        "tears_0066",
+        "tears_0034",
+        "tears_0050",
+        "tears_0008",
+        "tears_0075"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "holograms",
+      "language": "zh",
+      "query": "科学家被明亮的全息电脑屏幕包围",
+      "ranked": [
+        "tears_0090",
+        "tears_0070",
+        "tears_0058",
+        "tears_0066",
+        "tears_0062",
+        "tears_0050",
+        "tears_0034",
+        "tears_0008",
+        "tears_0036",
+        "tears_0014"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "table",
+      "language": "en",
+      "query": "Several people sitting together around a table indoors",
+      "ranked": [
+        "tears_0058",
+        "tears_0079",
+        "tears_0014",
+        "tears_0094",
+        "tears_0112",
+        "tears_0031",
+        "sintel_0007",
+        "tears_0040",
+        "tears_0113",
+        "tears_0093"
+      ],
+      "first_relevant_rank": 4
+    },
+    {
+      "system": "dense_joint",
+      "intent": "table",
+      "language": "zh",
+      "query": "几个人围坐在室内的桌子旁",
+      "ranked": [
+        "tears_0058",
+        "sintel_0007",
+        "tears_0079",
+        "tears_0094",
+        "tears_0016",
+        "tears_0014",
+        "tears_0001",
+        "tears_0040",
+        "tears_0070",
+        "tears_0066"
+      ],
+      "first_relevant_rank": 4
+    },
+    {
+      "system": "dense_joint",
+      "intent": "robot",
+      "language": "en",
+      "query": "A large robot walking through a city street",
+      "ranked": [
+        "tears_0037",
+        "tears_0051",
+        "tears_0047",
+        "tears_0085",
+        "tears_0097",
+        "tears_0058",
+        "tears_0096",
+        "tears_0043",
+        "tears_0061",
+        "tears_0060"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "robot",
+      "language": "zh",
+      "query": "巨型机器人出现在城市街道上",
+      "ranked": [
+        "tears_0037",
+        "tears_0051",
+        "tears_0047",
+        "tears_0058",
+        "tears_0085",
+        "tears_0096",
+        "tears_0097",
+        "tears_0079",
+        "tears_0087",
+        "tears_0072"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "hand",
+      "language": "en",
+      "query": "A woman showing a mechanical robotic hand",
+      "ranked": [
+        "tears_0058",
+        "tears_0061",
+        "tears_0091",
+        "tears_0060",
+        "tears_0006",
+        "tears_0067",
+        "tears_0005",
+        "tears_0059",
+        "tears_0076",
+        "tears_0064"
+      ],
+      "first_relevant_rank": 2
+    },
+    {
+      "system": "dense_joint",
+      "intent": "hand",
+      "language": "zh",
+      "query": "女人展示机械手臂的画面",
+      "ranked": [
+        "tears_0058",
+        "tears_0091",
+        "tears_0060",
+        "tears_0061",
+        "tears_0099",
+        "tears_0006",
+        "tears_0059",
+        "tears_0005",
+        "tears_0067",
+        "tears_0076"
+      ],
+      "first_relevant_rank": 4
+    },
+    {
+      "system": "dense_joint",
+      "intent": "red_lens",
+      "language": "en",
+      "query": "A man wearing a glowing red mechanical eyepiece",
+      "ranked": [
+        "tears_0093",
+        "tears_0066",
+        "tears_0070",
+        "tears_0068",
+        "tears_0050",
+        "tears_0010",
+        "tears_0048",
+        "tears_0062",
+        "tears_0076",
+        "tears_0058"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "red_lens",
+      "language": "zh",
+      "query": "男人戴着发红光的机械目镜",
+      "ranked": [
+        "tears_0093",
+        "tears_0066",
+        "tears_0050",
+        "tears_0070",
+        "tears_0058",
+        "tears_0048",
+        "tears_0010",
+        "tears_0019",
+        "tears_0062",
+        "tears_0057"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "running",
+      "language": "en",
+      "query": "A man running along a tree-lined city street",
+      "ranked": [
+        "tears_0044",
+        "tears_0045",
+        "tears_0043",
+        "tears_0046",
+        "tears_0077",
+        "tears_0019",
+        "sintel_0003",
+        "tears_0085",
+        "tears_0081",
+        "tears_0051"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_joint",
+      "intent": "running",
+      "language": "zh",
+      "query": "男人沿着有树的城市街道奔跑",
+      "ranked": [
+        "tears_0044",
+        "tears_0045",
+        "sintel_0003",
+        "tears_0019",
+        "tears_0077",
+        "tears_0043",
+        "tears_0046",
+        "tears_0071",
+        "tears_0081",
+        "tears_0027"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "dense_joint",
+      "intent": "snow",
+      "language": "en",
+      "query": "A wide view of snowy mountain peaks",
+      "ranked": [
+        "sintel_0000",
+        "sintel_0006",
+        "tears_0001",
+        "sintel_0001",
+        "tears_0000",
+        "sintel_0003",
+        "tears_0019",
+        "sintel_0007",
+        "tears_0021",
+        "tears_0014"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "snow",
+      "language": "zh",
+      "query": "白雪覆盖的群山远景",
+      "ranked": [
+        "sintel_0000",
+        "sintel_0006",
+        "sintel_0007",
+        "tears_0019",
+        "sintel_0001",
+        "tears_0021",
+        "sintel_0003",
+        "tears_0072",
+        "tears_0058",
+        "tears_0016"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "dragon",
+      "language": "en",
+      "query": "A small dragon flying with its wings spread",
+      "ranked": [
+        "sintel_0005",
+        "sintel_0004",
+        "tears_0095",
+        "tears_0025",
+        "tears_0036",
+        "tears_0073",
+        "sintel_0007",
+        "sintel_0002",
+        "sintel_0001",
+        "sintel_0003"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "dragon",
+      "language": "zh",
+      "query": "一只小龙展开双翼飞翔",
+      "ranked": [
+        "sintel_0005",
+        "sintel_0004",
+        "sintel_0007",
+        "tears_0095",
+        "sintel_0003",
+        "tears_0073",
+        "tears_0036",
+        "tears_0025",
+        "tears_0058",
+        "tears_0083"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "desert",
+      "language": "en",
+      "query": "A wide desert landscape with sand dunes",
+      "ranked": [
+        "sintel_0006",
+        "sintel_0007",
+        "sintel_0000",
+        "sintel_0004",
+        "sintel_0003",
+        "tears_0000",
+        "tears_0058",
+        "tears_0001",
+        "tears_0003",
+        "tears_0002"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "dense_joint",
+      "intent": "desert",
+      "language": "zh",
+      "query": "辽阔的沙漠沙丘景观",
+      "ranked": [
+        "sintel_0006",
+        "sintel_0000",
+        "sintel_0007",
+        "sintel_0004",
+        "tears_0058",
+        "sintel_0003",
+        "tears_0001",
+        "tears_0072",
+        "tears_0014",
+        "tears_0002"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "city",
+      "language": "en",
+      "query": "A futuristic city skyline with many tall towers",
+      "ranked": [
+        "tears_0003",
+        "tears_0060",
+        "tears_0061",
+        "tears_0093",
+        "tears_0049",
+        "sintel_0006",
+        "tears_0065",
+        "tears_0058",
+        "tears_0001",
+        "tears_0017"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "city",
+      "language": "zh",
+      "query": "未来城市的高楼天际线",
+      "ranked": [
+        "tears_0058",
+        "tears_0017",
+        "tears_0003",
+        "tears_0019",
+        "tears_0072",
+        "tears_0007",
+        "tears_0034",
+        "tears_0037",
+        "tears_0001",
+        "tears_0104"
+      ],
+      "first_relevant_rank": 3
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "engines",
+      "language": "en",
+      "query": "Rocket engine nozzles and bright exhaust flames",
+      "ranked": [
+        "tears_0000",
+        "tears_0008",
+        "tears_0048",
+        "tears_0047",
+        "tears_0004",
+        "tears_0002",
+        "tears_0001",
+        "tears_0104",
+        "tears_0103",
+        "tears_0059"
+      ],
+      "first_relevant_rank": 6
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "engines",
+      "language": "zh",
+      "query": "火箭发动机喷口与明亮尾焰",
+      "ranked": [
+        "tears_0002",
+        "tears_0001",
+        "tears_0104",
+        "tears_0000",
+        "tears_0103",
+        "tears_0077",
+        "tears_0082",
+        "tears_0095",
+        "tears_0058",
+        "tears_0118"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "bridge",
+      "language": "en",
+      "query": "A young man and woman talking on a bridge beside a canal",
+      "ranked": [
+        "tears_0059",
+        "tears_0004",
+        "tears_0047",
+        "tears_0021",
+        "tears_0060",
+        "tears_0053",
+        "tears_0065",
+        "tears_0003",
+        "tears_0064",
+        "tears_0061"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "bridge",
+      "language": "zh",
+      "query": "年轻男女站在运河边的桥上交谈",
+      "ranked": [
+        "tears_0006",
+        "tears_0085",
+        "tears_0004",
+        "tears_0005",
+        "tears_0045",
+        "tears_0046",
+        "tears_0044",
+        "tears_0052",
+        "tears_0047",
+        "tears_0026"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "brain",
+      "language": "en",
+      "query": "A human brain placed on a dish in a laboratory",
+      "ranked": [
+        "tears_0001",
+        "tears_0049",
+        "tears_0093",
+        "tears_0060",
+        "tears_0061",
+        "tears_0065",
+        "tears_0003",
+        "tears_0064",
+        "tears_0009",
+        "tears_0010"
+      ],
+      "first_relevant_rank": 9
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "brain",
+      "language": "zh",
+      "query": "实验室盘子中放着一颗大脑",
+      "ranked": [
+        "tears_0009",
+        "tears_0010",
+        "tears_0090",
+        "tears_0007",
+        "tears_0058",
+        "tears_0066",
+        "tears_0093",
+        "tears_0076",
+        "tears_0051",
+        "tears_0062"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "newspaper",
+      "language": "en",
+      "query": "A close-up of hands holding a newspaper",
+      "ranked": [
+        "tears_0093",
+        "tears_0065",
+        "tears_0061",
+        "tears_0003",
+        "sintel_0006",
+        "tears_0057",
+        "sintel_0002",
+        "tears_0060",
+        "tears_0013",
+        "tears_0032"
+      ],
+      "first_relevant_rank": 9
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "newspaper",
+      "language": "zh",
+      "query": "双手拿着报纸的特写",
+      "ranked": [
+        "tears_0013",
+        "tears_0058",
+        "tears_0016",
+        "tears_0031",
+        "tears_0005",
+        "tears_0081",
+        "tears_0066",
+        "tears_0093",
+        "tears_0077",
+        "tears_0014"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "sniper",
+      "language": "en",
+      "query": "A person aiming a rifle through a scope",
+      "ranked": [
+        "sintel_0006",
+        "tears_0093",
+        "tears_0060",
+        "tears_0032",
+        "tears_0065",
+        "tears_0003",
+        "tears_0061",
+        "tears_0049",
+        "tears_0019",
+        "tears_0016"
+      ],
+      "first_relevant_rank": 9
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "sniper",
+      "language": "zh",
+      "query": "人物通过瞄准镜举枪瞄准",
+      "ranked": [
+        "tears_0019",
+        "tears_0056",
+        "tears_0016",
+        "tears_0033",
+        "tears_0023",
+        "tears_0015",
+        "tears_0024",
+        "tears_0020",
+        "tears_0081",
+        "tears_0017"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "holograms",
+      "language": "en",
+      "query": "A scientist surrounded by bright holographic computer screens",
+      "ranked": [
+        "tears_0058",
+        "tears_0049",
+        "tears_0093",
+        "tears_0060",
+        "tears_0006",
+        "tears_0003",
+        "tears_0065",
+        "tears_0032",
+        "tears_0061",
+        "tears_0005"
+      ],
+      "first_relevant_rank": 2
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "holograms",
+      "language": "zh",
+      "query": "科学家被明亮的全息电脑屏幕包围",
+      "ranked": [
+        "tears_0090",
+        "tears_0070",
+        "tears_0058",
+        "tears_0066",
+        "tears_0062",
+        "tears_0050",
+        "tears_0034",
+        "tears_0008",
+        "tears_0036",
+        "tears_0014"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "table",
+      "language": "en",
+      "query": "Several people sitting together around a table indoors",
+      "ranked": [
+        "tears_0093",
+        "tears_0049",
+        "tears_0032",
+        "tears_0060",
+        "tears_0003",
+        "sintel_0006",
+        "tears_0058",
+        "tears_0079",
+        "tears_0014",
+        "tears_0061"
+      ],
+      "first_relevant_rank": 3
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "table",
+      "language": "zh",
+      "query": "几个人围坐在室内的桌子旁",
+      "ranked": [
+        "tears_0058",
+        "sintel_0007",
+        "tears_0079",
+        "tears_0094",
+        "tears_0016",
+        "tears_0014",
+        "tears_0001",
+        "tears_0040",
+        "tears_0070",
+        "tears_0066"
+      ],
+      "first_relevant_rank": 4
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "robot",
+      "language": "en",
+      "query": "A large robot walking through a city street",
+      "ranked": [
+        "tears_0058",
+        "tears_0061",
+        "tears_0060",
+        "tears_0065",
+        "tears_0005",
+        "tears_0093",
+        "tears_0003",
+        "tears_0049",
+        "tears_0032",
+        "tears_0037"
+      ],
+      "first_relevant_rank": 10
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "robot",
+      "language": "zh",
+      "query": "巨型机器人出现在城市街道上",
+      "ranked": [
+        "tears_0037",
+        "tears_0051",
+        "tears_0047",
+        "tears_0058",
+        "tears_0085",
+        "tears_0096",
+        "tears_0097",
+        "tears_0079",
+        "tears_0087",
+        "tears_0072"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "hand",
+      "language": "en",
+      "query": "A woman showing a mechanical robotic hand",
+      "ranked": [
+        "tears_0058",
+        "tears_0061",
+        "tears_0006",
+        "tears_0060",
+        "tears_0005",
+        "tears_0065",
+        "tears_0093",
+        "tears_0032",
+        "tears_0003",
+        "tears_0049"
+      ],
+      "first_relevant_rank": 2
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "hand",
+      "language": "zh",
+      "query": "女人展示机械手臂的画面",
+      "ranked": [
+        "tears_0058",
+        "tears_0091",
+        "tears_0060",
+        "tears_0061",
+        "tears_0099",
+        "tears_0006",
+        "tears_0059",
+        "tears_0005",
+        "tears_0067",
+        "tears_0076"
+      ],
+      "first_relevant_rank": 4
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "red_lens",
+      "language": "en",
+      "query": "A man wearing a glowing red mechanical eyepiece",
+      "ranked": [
+        "tears_0093",
+        "tears_0065",
+        "tears_0049",
+        "tears_0032",
+        "tears_0061",
+        "tears_0060",
+        "tears_0003",
+        "sintel_0006",
+        "tears_0066",
+        "tears_0070"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "red_lens",
+      "language": "zh",
+      "query": "男人戴着发红光的机械目镜",
+      "ranked": [
+        "tears_0093",
+        "tears_0066",
+        "tears_0050",
+        "tears_0070",
+        "tears_0058",
+        "tears_0048",
+        "tears_0010",
+        "tears_0019",
+        "tears_0062",
+        "tears_0057"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "running",
+      "language": "en",
+      "query": "A man running along a tree-lined city street",
+      "ranked": [
+        "tears_0093",
+        "tears_0065",
+        "sintel_0006",
+        "tears_0049",
+        "tears_0060",
+        "tears_0061",
+        "tears_0003",
+        "tears_0032",
+        "tears_0044",
+        "tears_0045"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "running",
+      "language": "zh",
+      "query": "男人沿着有树的城市街道奔跑",
+      "ranked": [
+        "tears_0044",
+        "tears_0045",
+        "sintel_0003",
+        "tears_0019",
+        "tears_0077",
+        "tears_0043",
+        "tears_0046",
+        "tears_0071",
+        "tears_0081",
+        "tears_0027"
+      ],
+      "first_relevant_rank": null
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "snow",
+      "language": "en",
+      "query": "A wide view of snowy mountain peaks",
+      "ranked": [
+        "sintel_0006",
+        "sintel_0002",
+        "tears_0003",
+        "tears_0032",
+        "tears_0093",
+        "tears_0049",
+        "tears_0060",
+        "tears_0065",
+        "sintel_0000",
+        "tears_0001"
+      ],
+      "first_relevant_rank": 9
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "snow",
+      "language": "zh",
+      "query": "白雪覆盖的群山远景",
+      "ranked": [
+        "sintel_0000",
+        "sintel_0006",
+        "sintel_0007",
+        "tears_0019",
+        "sintel_0001",
+        "tears_0021",
+        "sintel_0003",
+        "tears_0072",
+        "tears_0058",
+        "tears_0016"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "dragon",
+      "language": "en",
+      "query": "A small dragon flying with its wings spread",
+      "ranked": [
+        "sintel_0006",
+        "tears_0065",
+        "tears_0093",
+        "tears_0003",
+        "tears_0061",
+        "tears_0060",
+        "tears_0032",
+        "sintel_0005",
+        "sintel_0004",
+        "tears_0095"
+      ],
+      "first_relevant_rank": 8
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "dragon",
+      "language": "zh",
+      "query": "一只小龙展开双翼飞翔",
+      "ranked": [
+        "sintel_0005",
+        "sintel_0004",
+        "sintel_0007",
+        "tears_0095",
+        "sintel_0003",
+        "tears_0073",
+        "tears_0036",
+        "tears_0025",
+        "tears_0058",
+        "tears_0083"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "desert",
+      "language": "en",
+      "query": "A wide desert landscape with sand dunes",
+      "ranked": [
+        "sintel_0006",
+        "tears_0003",
+        "tears_0093",
+        "tears_0049",
+        "tears_0032",
+        "tears_0061",
+        "tears_0060",
+        "sintel_0007",
+        "sintel_0000",
+        "sintel_0004"
+      ],
+      "first_relevant_rank": 1
+    },
+    {
+      "system": "rrf_joint",
+      "intent": "desert",
+      "language": "zh",
+      "query": "辽阔的沙漠沙丘景观",
+      "ranked": [
+        "sintel_0006",
+        "sintel_0000",
+        "sintel_0007",
+        "sintel_0004",
+        "tears_0058",
+        "sintel_0003",
+        "tears_0001",
+        "tears_0072",
+        "tears_0014",
+        "tears_0002"
+      ],
+      "first_relevant_rank": 1
+    }
+  ],
+  "environment": {
+    "python": "3.13.9",
+    "torch": "2.11.0",
+    "transformers": "4.57.1",
+    "gpu": "NVIDIA GeForce RTX 5070 Ti Laptop GPU"
+  },
+  "interpretation": "Development pilot only. Paired languages are correlated. No training, independent human gold, statistical significance claim, production metric or full-video grounding result."
+}

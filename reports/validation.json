@@ -1,0 +1,32 @@
+{
+  "local_cpu_regression": {
+    "earlier_complete_run": "41 passed",
+    "latest_attempt": "39 passed; 2 setup errors caused by inaccessible project-local imageio_ffmpeg package in Windows sandbox",
+    "clean_environment_verification": "See GitHub Actions for Linux Python 3.11 and 3.12 results"
+  },
+  "browser": {
+    "collection_assets": 2,
+    "segments": 132,
+    "query": "实验室盘子里的一颗大脑",
+    "top_result": "tears_0009",
+    "generated_duration_seconds": 12.021333,
+    "stages": [
+      "compile",
+      "verify",
+      "render",
+      "probe"
+    ],
+    "screenshot": "examples/workbench.png"
+  },
+  "gpu_evidence": [
+    "reports/corpus.json",
+    "reports/retrieval_pilot.json",
+    "reports/real_runs.json"
+  ],
+  "not_validated": [
+    "Ollama service",
+    "Docker build",
+    "public hosting",
+    "independent human test set"
+  ]
+}

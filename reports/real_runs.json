@@ -1,0 +1,706 @@
+{
+  "collection_hash": "f25f2c99d3d371c1be8d3137a22393404a368d2e7d7a5dae53855273ce766683",
+  "planning_model": "Qwen/Qwen3-0.6B",
+  "planning_seconds_including_model_load": 18.181772199997795,
+  "embedding_model": "Qwen/Qwen3-VL-Embedding-2B",
+  "scope": "Three real local media runs; controlled exceptions exercise restart replay, not power-loss testing.",
+  "experiments": [
+    {
+      "job_id": "v1-llm-trailer",
+      "elapsed_seconds_excluding_model_load": 1.950055399996927,
+      "controlled_failure": false,
+      "result": {
+        "job_id": "v1-llm-trailer",
+        "plan": {
+          "version": 1,
+          "collection_hash": "f25f2c99d3d371c1be8d3137a22393404a368d2e7d7a5dae53855273ce766683",
+          "spec": {
+            "goals": [
+              {
+                "id": "g1",
+                "query": "A scene showing a futuristic city with advanced technology and a diverse population.",
+                "channel": "visual"
+              },
+              {
+                "id": "g2",
+                "query": "A scene showing a humanoid robot performing a complex task in a controlled environment.",
+                "channel": "visual"
+              },
+              {
+                "id": "g3",
+                "query": "A scene showing a group of characters engaged in a meaningful conversation in a quiet, futuristic setting.",
+                "channel": "visual"
+              }
+            ],
+            "budget_seconds": 18.0,
+            "max_clips": 5,
+            "chronological": true,
+            "asset_ids": [],
+            "planner": "transformers"
+          },
+          "clips": [
+            {
+              "segment_id": "tears_0058",
+              "asset_id": "tears",
+              "start": 348.0,
+              "end": 354.0,
+              "goal_ids": [
+                "g1"
+              ],
+              "relevance": 1.0
+            },
+            {
+              "segment_id": "tears_0076",
+              "asset_id": "tears",
+              "start": 456.0,
+              "end": 462.0,
+              "goal_ids": [
+                "g2"
+              ],
+              "relevance": 1.0
+            },
+            {
+              "segment_id": "tears_0096",
+              "asset_id": "tears",
+              "start": 576.0,
+              "end": 582.0,
+              "goal_ids": [
+                "g3"
+              ],
+              "relevance": 1.0
+            }
+          ],
+          "warnings": [
+            "g1: dense similarity is a ranking signal, not proof of visual correctness",
+            "g2: dense similarity is a ranking signal, not proof of visual correctness",
+            "g3: dense similarity is a ranking signal, not proof of visual correctness"
+          ],
+          "retrieval_mode": "adaptive"
+        },
+        "validation": {
+          "valid": true,
+          "duration": 18.0,
+          "covered_goals": [
+            "g1",
+            "g2",
+            "g3"
+          ],
+          "checks": [
+            "collection",
+            "budget",
+            "provenance",
+            "bounds",
+            "overlap",
+            "coverage",
+            "order"
+          ]
+        },
+        "media": {
+          "duration": 18.021333,
+          "width": 640,
+          "height": 360,
+          "fps": 24.888641425389753,
+          "audio": true
+        },
+        "render": {
+          "duration": 18.021333,
+          "width": 640,
+          "height": 360,
+          "fps": 24.888641425389753,
+          "audio": true,
+          "expected_duration": 18.0,
+          "tolerance": 0.2,
+          "sha256": "be766ba1dff4148a3a5be760b46e4fec18dbf2f29b0ad42211045b94ed3e766b",
+          "clip_count": 3
+        },
+        "status": "complete"
+      },
+      "journal": {
+        "id": "v1-llm-trailer",
+        "status": "complete",
+        "error": null,
+        "spec": {
+          "collection_hash": "f25f2c99d3d371c1be8d3137a22393404a368d2e7d7a5dae53855273ce766683",
+          "spec": {
+            "goals": [
+              {
+                "id": "g1",
+                "query": "A scene showing a futuristic city with advanced technology and a diverse population.",
+                "channel": "visual"
+              },
+              {
+                "id": "g2",
+                "query": "A scene showing a humanoid robot performing a complex task in a controlled environment.",
+                "channel": "visual"
+              },
+              {
+                "id": "g3",
+                "query": "A scene showing a group of characters engaged in a meaningful conversation in a quiet, futuristic setting.",
+                "channel": "visual"
+              }
+            ],
+            "budget_seconds": 18.0,
+            "max_clips": 5,
+            "chronological": true,
+            "asset_ids": [],
+            "planner": "transformers"
+          },
+          "retrieval_mode": "adaptive",
+          "compiler_version": 3,
+          "routing_policy": "goal_channel_blank_filter_v1",
+          "index_fingerprints": {
+            "joint": "80b4db32f7e6459fb37c75eee1ff0e3cd5e01863bc418b2b947f973dd60b10e9",
+            "image": "80b4db32f7e6459fb37c75eee1ff0e3cd5e01863bc418b2b947f973dd60b10e9",
+            "text": "80b4db32f7e6459fb37c75eee1ff0e3cd5e01863bc418b2b947f973dd60b10e9"
+          },
+          "render_contract": "h264_aac_640x360_25fps_v1"
+        },
+        "updated": 1792574437.5451972,
+        "events": [
+          {
+            "seq": 97,
+            "event": "claimed",
+            "detail": "",
+            "at": 1792574435.6363063
+          },
+          {
+            "seq": 98,
+            "event": "stage_started",
+            "detail": "compile",
+            "at": 1792574435.6441689
+          },
+          {
+            "seq": 99,
+            "event": "stage_completed",
+            "detail": "compile",
+            "at": 1792574436.1185086
+          },
+          {
+            "seq": 100,
+            "event": "stage_started",
+            "detail": "verify",
+            "at": 1792574436.1251235
+          },
+          {
+            "seq": 101,
+            "event": "stage_completed",
+            "detail": "verify",
+            "at": 1792574436.1385736
+          },
+          {
+            "seq": 102,
+            "event": "stage_started",
+            "detail": "render",
+            "at": 1792574436.1467078
+          },
+          {
+            "seq": 103,
+            "event": "stage_completed",
+            "detail": "render",
+            "at": 1792574437.5095785
+          },
+          {
+            "seq": 104,
+            "event": "stage_started",
+            "detail": "probe",
+            "at": 1792574437.51651
+          },
+          {
+            "seq": 105,
+            "event": "stage_completed",
+            "detail": "probe",
+            "at": 1792574437.5390942
+          }
+        ],
+        "stages": [
+          {
+            "stage": "compile",
+            "attempts": 1
+          },
+          {
+            "stage": "probe",
+            "attempts": 1
+          },
+          {
+            "stage": "render",
+            "attempts": 1
+          },
+          {
+            "stage": "verify",
+            "attempts": 1
+          }
+        ]
+      }
+    },
+    {
+      "job_id": "v1-animation",
+      "elapsed_seconds_excluding_model_load": 0.9367951000022003,
+      "controlled_failure": false,
+      "result": {
+        "job_id": "v1-animation",
+        "plan": {
+          "version": 1,
+          "collection_hash": "f25f2c99d3d371c1be8d3137a22393404a368d2e7d7a5dae53855273ce766683",
+          "spec": {
+            "goals": [
+              {
+                "id": "g1",
+                "query": "snowy mountains",
+                "channel": "visual"
+              },
+              {
+                "id": "g2",
+                "query": "a small flying dragon",
+                "channel": "visual"
+              },
+              {
+                "id": "g3",
+                "query": "desert sand dunes",
+                "channel": "visual"
+              }
+            ],
+            "budget_seconds": 12.0,
+            "max_clips": 5,
+            "chronological": true,
+            "asset_ids": [
+              "sintel"
+            ],
+            "planner": "explicit"
+          },
+          "clips": [
+            {
+              "segment_id": "sintel_0000",
+              "asset_id": "sintel",
+              "start": 0.0,
+              "end": 4.0,
+              "goal_ids": [
+                "g1"
+              ],
+              "relevance": 1.0
+            },
+            {
+              "segment_id": "sintel_0005",
+              "asset_id": "sintel",
+              "start": 30.0,
+              "end": 34.0,
+              "goal_ids": [
+                "g2"
+              ],
+              "relevance": 1.0
+            },
+            {
+              "segment_id": "sintel_0006",
+              "asset_id": "sintel",
+              "start": 36.0,
+              "end": 40.0,
+              "goal_ids": [
+                "g3"
+              ],
+              "relevance": 1.0
+            }
+          ],
+          "warnings": [
+            "g1: dense similarity is a ranking signal, not proof of visual correctness",
+            "g2: dense similarity is a ranking signal, not proof of visual correctness",
+            "g3: dense similarity is a ranking signal, not proof of visual correctness"
+          ],
+          "retrieval_mode": "adaptive"
+        },
+        "validation": {
+          "valid": true,
+          "duration": 12.0,
+          "covered_goals": [
+            "g1",
+            "g2",
+            "g3"
+          ],
+          "checks": [
+            "collection",
+            "budget",
+            "provenance",
+            "bounds",
+            "overlap",
+            "coverage",
+            "order"
+          ]
+        },
+        "media": {
+          "duration": 12.0,
+          "width": 640,
+          "height": 360,
+          "fps": 24.83277591973244,
+          "audio": true
+        },
+        "render": {
+          "duration": 12.0,
+          "width": 640,
+          "height": 360,
+          "fps": 24.83277591973244,
+          "audio": true,
+          "expected_duration": 12.0,
+          "tolerance": 0.2,
+          "sha256": "ee4dbca1d91910b7c86ee490d01549d339ccc4e2ad19df94bc0823e53242d1a7",
+          "clip_count": 3
+        },
+        "status": "complete"
+      },
+      "journal": {
+        "id": "v1-animation",
+        "status": "complete",
+        "error": null,
+        "spec": {
+          "collection_hash": "f25f2c99d3d371c1be8d3137a22393404a368d2e7d7a5dae53855273ce766683",
+          "spec": {
+            "goals": [
+              {
+                "id": "g1",
+                "query": "snowy mountains",
+                "channel": "visual"
+              },
+              {
+                "id": "g2",
+                "query": "a small flying dragon",
+                "channel": "visual"
+              },
+              {
+                "id": "g3",
+                "query": "desert sand dunes",
+                "channel": "visual"
+              }
+            ],
+            "budget_seconds": 12.0,
+            "max_clips": 5,
+            "chronological": true,
+            "asset_ids": [
+              "sintel"
+            ],
+            "planner": "explicit"
+          },
+          "retrieval_mode": "adaptive",
+          "compiler_version": 3,
+          "routing_policy": "goal_channel_blank_filter_v1",
+          "index_fingerprints": {
+            "joint": "80b4db32f7e6459fb37c75eee1ff0e3cd5e01863bc418b2b947f973dd60b10e9",
+            "image": "80b4db32f7e6459fb37c75eee1ff0e3cd5e01863bc418b2b947f973dd60b10e9",
+            "text": "80b4db32f7e6459fb37c75eee1ff0e3cd5e01863bc418b2b947f973dd60b10e9"
+          },
+          "render_contract": "h264_aac_640x360_25fps_v1"
+        },
+        "updated": 1792574438.4868834,
+        "events": [
+          {
+            "seq": 106,
+            "event": "claimed",
+            "detail": "",
+            "at": 1792574437.5636861
+          },
+          {
+            "seq": 107,
+            "event": "stage_started",
+            "detail": "compile",
+            "at": 1792574437.5706356
+          },
+          {
+            "seq": 108,
+            "event": "stage_completed",
+            "detail": "compile",
+            "at": 1792574437.7177017
+          },
+          {
+            "seq": 109,
+            "event": "stage_started",
+            "detail": "verify",
+            "at": 1792574437.7240355
+          },
+          {
+            "seq": 110,
+            "event": "stage_completed",
+            "detail": "verify",
+            "at": 1792574437.7376547
+          },
+          {
+            "seq": 111,
+            "event": "stage_started",
+            "detail": "render",
+            "at": 1792574437.744393
+          },
+          {
+            "seq": 112,
+            "event": "stage_completed",
+            "detail": "render",
+            "at": 1792574438.4513862
+          },
+          {
+            "seq": 113,
+            "event": "stage_started",
+            "detail": "probe",
+            "at": 1792574438.4591093
+          },
+          {
+            "seq": 114,
+            "event": "stage_completed",
+            "detail": "probe",
+            "at": 1792574438.4798253
+          }
+        ],
+        "stages": [
+          {
+            "stage": "compile",
+            "attempts": 1
+          },
+          {
+            "stage": "probe",
+            "attempts": 1
+          },
+          {
+            "stage": "render",
+            "attempts": 1
+          },
+          {
+            "stage": "verify",
+            "attempts": 1
+          }
+        ]
+      }
+    },
+    {
+      "job_id": "v1-recovery",
+      "elapsed_seconds_excluding_model_load": 1.0844423999951687,
+      "controlled_failure": true,
+      "result": {
+        "job_id": "v1-recovery",
+        "plan": {
+          "version": 1,
+          "collection_hash": "f25f2c99d3d371c1be8d3137a22393404a368d2e7d7a5dae53855273ce766683",
+          "spec": {
+            "goals": [
+              {
+                "id": "g1",
+                "query": "a human brain on a dish",
+                "channel": "visual"
+              },
+              {
+                "id": "g2",
+                "query": "a futuristic city skyline",
+                "channel": "visual"
+              }
+            ],
+            "budget_seconds": 12.0,
+            "max_clips": 5,
+            "chronological": true,
+            "asset_ids": [
+              "tears"
+            ],
+            "planner": "explicit"
+          },
+          "clips": [
+            {
+              "segment_id": "tears_0003",
+              "asset_id": "tears",
+              "start": 18.0,
+              "end": 24.0,
+              "goal_ids": [
+                "g2"
+              ],
+              "relevance": 1.0
+            },
+            {
+              "segment_id": "tears_0009",
+              "asset_id": "tears",
+              "start": 54.0,
+              "end": 60.0,
+              "goal_ids": [
+                "g1"
+              ],
+              "relevance": 1.0
+            }
+          ],
+          "warnings": [
+            "g1: dense similarity is a ranking signal, not proof of visual correctness",
+            "g2: dense similarity is a ranking signal, not proof of visual correctness"
+          ],
+          "retrieval_mode": "adaptive"
+        },
+        "validation": {
+          "valid": true,
+          "duration": 12.0,
+          "covered_goals": [
+            "g1",
+            "g2"
+          ],
+          "checks": [
+            "collection",
+            "budget",
+            "provenance",
+            "bounds",
+            "overlap",
+            "coverage",
+            "order"
+          ]
+        },
+        "media": {
+          "duration": 12.021333,
+          "width": 640,
+          "height": 360,
+          "fps": 24.91638795986622,
+          "audio": true
+        },
+        "render": {
+          "duration": 12.021333,
+          "width": 640,
+          "height": 360,
+          "fps": 24.91638795986622,
+          "audio": true,
+          "expected_duration": 12.0,
+          "tolerance": 0.2,
+          "sha256": "60db62f004e79514f12fe6d663738d753f3eac321ff9f13140c4cb4485b243f5",
+          "clip_count": 2
+        },
+        "status": "complete"
+      },
+      "journal": {
+        "id": "v1-recovery",
+        "status": "complete",
+        "error": null,
+        "spec": {
+          "collection_hash": "f25f2c99d3d371c1be8d3137a22393404a368d2e7d7a5dae53855273ce766683",
+          "spec": {
+            "goals": [
+              {
+                "id": "g1",
+                "query": "a human brain on a dish",
+                "channel": "visual"
+              },
+              {
+                "id": "g2",
+                "query": "a futuristic city skyline",
+                "channel": "visual"
+              }
+            ],
+            "budget_seconds": 12.0,
+            "max_clips": 5,
+            "chronological": true,
+            "asset_ids": [
+              "tears"
+            ],
+            "planner": "explicit"
+          },
+          "retrieval_mode": "adaptive",
+          "compiler_version": 3,
+          "routing_policy": "goal_channel_blank_filter_v1",
+          "index_fingerprints": {
+            "joint": "80b4db32f7e6459fb37c75eee1ff0e3cd5e01863bc418b2b947f973dd60b10e9",
+            "image": "80b4db32f7e6459fb37c75eee1ff0e3cd5e01863bc418b2b947f973dd60b10e9",
+            "text": "80b4db32f7e6459fb37c75eee1ff0e3cd5e01863bc418b2b947f973dd60b10e9"
+          },
+          "render_contract": "h264_aac_640x360_25fps_v1"
+        },
+        "updated": 1792574439.5736458,
+        "events": [
+          {
+            "seq": 115,
+            "event": "claimed",
+            "detail": "",
+            "at": 1792574438.5099025
+          },
+          {
+            "seq": 116,
+            "event": "stage_started",
+            "detail": "compile",
+            "at": 1792574438.5171208
+          },
+          {
+            "seq": 117,
+            "event": "stage_completed",
+            "detail": "compile",
+            "at": 1792574438.6237912
+          },
+          {
+            "seq": 118,
+            "event": "stage_started",
+            "detail": "verify",
+            "at": 1792574438.6304138
+          },
+          {
+            "seq": 119,
+            "event": "stage_completed",
+            "detail": "verify",
+            "at": 1792574438.6411545
+          },
+          {
+            "seq": 120,
+            "event": "stage_started",
+            "detail": "render",
+            "at": 1792574438.6487937
+          },
+          {
+            "seq": 121,
+            "event": "stage_completed",
+            "detail": "render",
+            "at": 1792574439.4853537
+          },
+          {
+            "seq": 122,
+            "event": "failed",
+            "detail": "RuntimeError: controlled interruption after render",
+            "at": 1792574439.4907115
+          },
+          {
+            "seq": 123,
+            "event": "claimed",
+            "detail": "",
+            "at": 1792574439.5087962
+          },
+          {
+            "seq": 124,
+            "event": "cache_hit",
+            "detail": "compile",
+            "at": 1792574439.517878
+          },
+          {
+            "seq": 125,
+            "event": "cache_hit",
+            "detail": "verify",
+            "at": 1792574439.5254753
+          },
+          {
+            "seq": 126,
+            "event": "cache_hit",
+            "detail": "render",
+            "at": 1792574439.5336459
+          },
+          {
+            "seq": 127,
+            "event": "stage_started",
+            "detail": "probe",
+            "at": 1792574439.541682
+          },
+          {
+            "seq": 128,
+            "event": "stage_completed",
+            "detail": "probe",
+            "at": 1792574439.566256
+          }
+        ],
+        "stages": [
+          {
+            "stage": "compile",
+            "attempts": 1
+          },
+          {
+            "stage": "probe",
+            "attempts": 1
+          },
+          {
+            "stage": "render",
+            "attempts": 1
+          },
+          {
+            "stage": "verify",
+            "attempts": 1
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "goals": [
+    {
+      "id": "g1",
+      "query": "A scene showing a futuristic city with advanced technology and a diverse population.",
+      "channel": "visual"
+    },
+    {
+      "id": "g2",
+      "query": "A scene showing a humanoid robot performing a complex task in a controlled environment.",
+      "channel": "visual"
+    },
+    {
+      "id": "g3",
+      "query": "A scene showing a group of characters engaged in a meaningful conversation in a quiet, futuristic setting.",
+      "channel": "visual"
+    }
+  ],
+  "budget_seconds": 18.0,
+  "max_clips": 5,
+  "chronological": true,
+  "asset_ids": [],
+  "planner": "transformers"
+}

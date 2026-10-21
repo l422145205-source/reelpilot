@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ReelPilot · 素材剪辑工作台</title><link rel="stylesheet" href="/style.css"></head>
+<body>
+<header><a class="brand" href="/">Reel<span>Pilot</span></a><span class="tag">素材检索与剪辑工作台</span><span id="connection" class="status">连接中</span></header>
+<main>
+<div class="intro"><div><p class="eyebrow">从创意到可核对的片段</p><h1>找到画面，组织成片。</h1><p>描述需要的场景，检查来源与时间轴，再生成一份可继续编辑的剪辑。</p></div><div id="librarySummary" class="summary"></div></div>
+<div class="workspace">
+<aside>
+<section class="panel"><h2>剪辑需求</h2><label for="brief">你希望讲一个怎样的故事？</label><textarea id="brief" rows="5">制作一段科幻预告片，展示城市、机器人和人物对话。</textarea>
+<div class="presets"><button type="button" data-brief="制作一段科幻预告片，展示城市、机器人和人物对话。">科幻预告</button><button type="button" data-brief="找出人物面对面交流的片段，制作一段对话集锦。">人物对话</button></div>
+<div class="row"><div><label for="budget">总时长上限（秒）</label><input id="budget" type="number" value="18" min="2" max="90"></div><div><label for="maxClips">最多片段数</label><input id="maxClips" type="number" value="5" min="1" max="12"></div></div>
+<label for="provider">需求解析</label><select id="provider"><option value="explicit">明确目标（以分号分隔）</option><option value="transformers">本地模型拆解需求</option><option value="ollama">Ollama 模型</option></select><p class="hint" id="providerHint">明确目标模式：例如「city; robot; conversation」。</p>
+<label for="mode">素材检索</label><select id="mode"><option value="adaptive">按画面／对白目标选择通道</option><option value="lexical">字幕关键词</option><option value="dense">语义检索</option><option value="hybrid">字幕与语义 RRF 融合</option></select>
+<label class="check"><input id="chronological" type="checkbox" checked>保持同一素材内的时间顺序</label>
+<label for="assetFilter">素材范围</label><select id="assetFilter"><option value="">全部素材</option></select>
+<button class="primary" id="generate">检索并生成剪辑 <span>↗</span></button><p class="hint">时间与文件操作受程序约束。检索相关性仍需人工确认。</p>
+</section>
+<section class="panel secondary"><h2>先找一段素材</h2><div class="searchrow"><input id="search" placeholder="例如：a robot on a bridge"><button id="searchButton">检索</button></div><select id="searchView" aria-label="搜索内容"><option value="image">找画面</option><option value="text">找对白</option><option value="joint">联合内容（实验）</option></select><p class="hint">点击候选片段，即可查看原始素材对应时间。</p></section>
+</aside>
+<div class="results">
+<section class="panel viewer"><div class="section-head"><h2 id="viewerTitle">素材预览</h2><span id="viewerLabel" class="badge">原始素材</span></div><video id="preview" controls preload="metadata"></video><div id="sourceInfo" class="source-info">从下方候选片段选择画面</div></section>
+<section class="panel"><div class="section-head"><h2>任务进度</h2><span id="jobStatus" class="badge">尚未开始</span></div><div id="error" role="alert" hidden></div><ol id="events" class="events"><li class="muted">生成后会显示检索、计划校验、剪辑与媒体检查结果。</li></ol></section>
+<section class="panel"><div class="section-head"><h2 id="candidatesTitle">候选片段</h2><span id="candidateCount" class="muted"></span></div><div id="candidates" class="cards"><div class="empty">输入需求或检索词，找到可以使用的片段。</div></div></section>
+<section class="panel" id="planSection" hidden><div class="section-head"><h2>剪辑时间轴</h2><button id="downloadPlan" class="quiet">导出剪辑计划 JSON</button></div><div id="timeline"></div><p class="hint" id="planNote"></p></section>
+</div></div>
+<footer>ReelPilot · 本地运行的项目原型 <span>素材授权与作者信息以每条素材记录为准。</span></footer>
+</main><script src="/app.js"></script></body></html>

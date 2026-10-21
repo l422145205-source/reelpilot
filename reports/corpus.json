@@ -1,0 +1,34 @@
+{
+  "assets": [
+    {
+      "id": "tears",
+      "duration": 734.166667,
+      "sha256": "efa9062d9cdb7a338e40ad530dfdf234806743f29ae6a1a136b97ece4e588e8f",
+      "title": "Tears of Steel",
+      "attribution": "(CC) Blender Foundation | mango.blender.org",
+      "license": "CC-BY-3.0"
+    },
+    {
+      "id": "sintel",
+      "duration": 52.208333,
+      "sha256": "cb0fe73fc0a7d543459996c0cdab730997e6eac1013d3ede18796f777cb7f273",
+      "title": "Sintel trailer",
+      "attribution": "(CC) Blender Foundation | durian.blender.org",
+      "license": "CC-BY-3.0"
+    }
+  ],
+  "segments": 132,
+  "collection_hash": "f25f2c99d3d371c1be8d3137a22393404a368d2e7d7a5dae53855273ce766683",
+  "duration_seconds": 786.375,
+  "frame_policy": "one decoded midpoint frame per six-second window",
+  "asr": "faster-whisper base.en, CPU int8, word timestamp assignment",
+  "ingest_seconds": 5.767825599992648,
+  "embedding_seconds": 23.481666899999254,
+  "encoder_fingerprint": "80b4db32f7e6459fb37c75eee1ff0e3cd5e01863bc418b2b947f973dd60b10e9",
+  "checkpoint_loading": {
+    "missing_keys": [],
+    "unexpected_keys": [],
+    "mismatched_keys": [],
+    "error_msgs": []
+  }
+}

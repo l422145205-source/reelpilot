@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "label_provenance": "Agent-authored development labels based on inspection of timestamped midpoint-frame contact sheets. No independent human annotation. Bilingual forms share scene intents.",
+  "metric_scope": "Window-ID retrieval on one open film and one trailer; not full-video temporal grounding or production quality.",
+  "intents": [
+    {"id":"city","en":"A futuristic city skyline with many tall towers","zh":"未来城市的高楼天际线","relevant":["tears_0003","tears_0096","tears_0097"]},
+    {"id":"engines","en":"Rocket engine nozzles and bright exhaust flames","zh":"火箭发动机喷口与明亮尾焰","relevant":["tears_0001","tears_0002"]},
+    {"id":"bridge","en":"A young man and woman talking on a bridge beside a canal","zh":"年轻男女站在运河边的桥上交谈","relevant":["tears_0004","tears_0005","tears_0006","tears_0059","tears_0060","tears_0085"]},
+    {"id":"brain","en":"A human brain placed on a dish in a laboratory","zh":"实验室盘子中放着一颗大脑","relevant":["tears_0009","tears_0010"]},
+    {"id":"newspaper","en":"A close-up of hands holding a newspaper","zh":"双手拿着报纸的特写","relevant":["tears_0013"]},
+    {"id":"sniper","en":"A person aiming a rifle through a scope","zh":"人物通过瞄准镜举枪瞄准","relevant":["tears_0019","tears_0023","tears_0033","tears_0055","tears_0056","tears_0080","tears_0081","tears_0092"]},
+    {"id":"holograms","en":"A scientist surrounded by bright holographic computer screens","zh":"科学家被明亮的全息电脑屏幕包围","relevant":["tears_0035","tears_0036","tears_0049","tears_0050","tears_0062","tears_0063","tears_0066","tears_0070","tears_0090"]},
+    {"id":"table","en":"Several people sitting together around a table indoors","zh":"几个人围坐在室内的桌子旁","relevant":["tears_0032","tears_0038","tears_0040","tears_0041","tears_0084","tears_0094"]},
+    {"id":"robot","en":"A large robot walking through a city street","zh":"巨型机器人出现在城市街道上","relevant":["tears_0037","tears_0047","tears_0051","tears_0073","tears_0076","tears_0087"]},
+    {"id":"hand","en":"A woman showing a mechanical robotic hand","zh":"女人展示机械手臂的画面","relevant":["tears_0061","tears_0064","tears_0065","tears_0067"]},
+    {"id":"red_lens","en":"A man wearing a glowing red mechanical eyepiece","zh":"男人戴着发红光的机械目镜","relevant":["tears_0057","tears_0068","tears_0071","tears_0093"]},
+    {"id":"running","en":"A man running along a tree-lined city street","zh":"男人沿着有树的城市街道奔跑","relevant":["tears_0039","tears_0042"]},
+    {"id":"snow","en":"A wide view of snowy mountain peaks","zh":"白雪覆盖的群山远景","relevant":["sintel_0000"]},
+    {"id":"dragon","en":"A small dragon flying with its wings spread","zh":"一只小龙展开双翼飞翔","relevant":["sintel_0005"]},
+    {"id":"desert","en":"A wide desert landscape with sand dunes","zh":"辽阔的沙漠沙丘景观","relevant":["sintel_0006"]}
+  ]
+}
