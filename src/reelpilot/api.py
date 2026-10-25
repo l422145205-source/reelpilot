@@ -13,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import Field
 
 from .journal import Journal, BusyJob
+from .admission import Admission, QueueFull
 from .library import Library
 from .pipeline import run_job
 from .retrieval import Retriever
@@ -35,14 +36,25 @@ class JobRequest(StrictModel):
 
 
 def create_app(collection: Path, jobs: Path, *, encoder_path: str | None = None,
-               planner_path: str | None = None, ollama_model="qwen3:4b", device="cuda"):
+               planner_path: str | None = None, ollama_model="qwen3:4b", device="cuda",
+               workers=2, max_inflight=8):
+    if workers < 1:
+        raise ValueError("workers must be positive")
     library = Library(collection)
     journal = Journal(jobs)
-    pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="reelpilot")
+    admission = Admission(journal, capacity=max_inflight)
+    pool = ThreadPoolExecutor(max_workers=workers, thread_name_prefix="reelpilot")
     encoder_lock = RLock()
     encoder = None
-    active = {}
-    active_lock = RLock()
+    model_lock = RLock()
+
+    class LockedRetriever:
+        def __init__(self, inner):
+            self.inner, self.views = inner, inner.views
+
+        def search(self, *args, **kwargs):
+            with model_lock:
+                return self.inner.search(*args, **kwargs)
 
     @asynccontextmanager
     async def lifespan(app):
@@ -51,24 +63,25 @@ def create_app(collection: Path, jobs: Path, *, encoder_path: str | None = None,
         if encoder is not None:
             encoder.close()
 
-    app = FastAPI(title="ReelPilot", version="0.1.0", lifespan=lifespan)
+    app = FastAPI(title="ReelPilot", version="0.2.0", lifespan=lifespan)
 
     def retriever(mode):
         nonlocal encoder
         if mode != "lexical":
             if not encoder_path:
                 raise ValueError("this server has no multimodal query model configured")
-            with encoder_lock:
+            with model_lock, encoder_lock:
                 if encoder is None:
                     from .encoders import QwenEncoder
                     encoder = QwenEncoder(encoder_path, device=device)
-        return Retriever(library, encoder)
+        return LockedRetriever(Retriever(library, encoder))
 
     @app.get("/api/health")
     def health():
         return {"status": "ok", "collection_hash": library.hash, "assets": len(library.assets),
                 "segments": len(library.segments), "dense_configured": bool(encoder_path),
-                "planner_configured": bool(planner_path), "version": "0.1.0"}
+                "planner_configured": bool(planner_path), "version": "0.2.0",
+                "max_inflight": max_inflight, "workers": workers}
 
     @app.get("/api/library")
     def listing():
@@ -83,8 +96,10 @@ def create_app(collection: Path, jobs: Path, *, encoder_path: str | None = None,
         except (ValueError, RuntimeError) as exc:
             raise HTTPException(422, str(exc)) from exc
 
-    def execute(job_id, body):
+    def execute(ticket, body):
+        job_id = ticket.job
         try:
+            ticket.phase("planning")
             try:
                 resolved = journal.get(job_id)["spec"]["spec"]
             except KeyError:
@@ -95,52 +110,77 @@ def create_app(collection: Path, jobs: Path, *, encoder_path: str | None = None,
                 if not planner_path:
                     raise ValueError("no local planning model configured")
                 from .planner import transformers_spec
-                spec = transformers_spec(body.brief, planner_path, device=device)
+                with model_lock:
+                    ticket.guard()
+                    spec = transformers_spec(body.brief, planner_path, device=device)
             elif body.provider == "ollama":
                 from .planner import ollama_spec
-                spec = ollama_spec(body.brief, ollama_model)
+                with model_lock:
+                    ticket.guard()
+                    spec = ollama_spec(body.brief, ollama_model)
             else:
                 spec = explicit_spec(body.brief)
+            ticket.guard()
+            ticket.phase("executing")
             run_job(library, retriever(body.mode), journal, job_id, spec, mode=body.mode)
+            ticket.finish()
         except Exception as exc:
-            # The job may fail before its pipeline journal is created (e.g. LLM JSON).
-            with active_lock:
-                active[job_id] = {"status": "failed", "error": str(exc)[:1500]}
-            return
-        with active_lock:
-            active[job_id] = {"status": "complete"}
+            try:
+                ticket.finish(error=exc)
+            except BusyJob:
+                pass  # A stale request cannot change its successor's state.
+        finally:
+            ticket.stop()
 
     @app.post("/api/jobs", status_code=202)
     def create_job(body: JobRequest):
         job_id = body.job_id or uuid.uuid4().hex
         try:
-            journal.reserve_request(job_id, body.model_dump(exclude={"job_id"}))
+            ticket = admission.reserve(job_id, body.model_dump(exclude={"job_id"}))
         except ValueError as exc:
             raise HTTPException(409, str(exc)) from exc
-        with active_lock:
-            if active.get(job_id, {}).get("status") == "running" or journal.is_live(job_id):
-                raise HTTPException(409, "job already has an active worker")
-            active[job_id] = {"status": "running"}
-        pool.submit(execute, job_id, body)
+        except BusyJob as exc:
+            raise HTTPException(409, str(exc)) from exc
+        except QueueFull as exc:
+            raise HTTPException(429, str(exc), headers={"Retry-After": "5"}) from exc
+        ticket.start()
+        try:
+            pool.submit(execute, ticket, body)
+        except RuntimeError as exc:
+            ticket.finish(error=exc)
+            ticket.stop()
+            raise HTTPException(503, "worker pool is unavailable") from exc
         return {"job_id": job_id, "status": "queued"}
 
     @app.get("/api/jobs/{job_id}")
     def job(job_id: str):
         try:
+            receipt = admission.get(job_id)
+        except KeyError:
+            receipt = None
+        try:
             result = journal.get(job_id)
-            if result["status"] == "complete":
+            if result["status"] == "complete" and (receipt is None or receipt["status"] == "complete"):
                 import json
                 result["result"] = json.loads((journal.root/job_id/"result.json").read_text(encoding="utf-8"))
+            if receipt is not None:
+                result["pipeline_status"] = result["status"]
+                result["submission"] = receipt
+                if receipt["status"] != "complete":
+                    result["status"], result["error"] = receipt["status"], receipt["error"]
             return result
         except KeyError:
-            with active_lock:
-                state = active.get(job_id)
-            if state:
-                return {"job_id": job_id, **state, "events": []}
+            if receipt:
+                return {"job_id": job_id, **receipt, "events": []}
             raise HTTPException(404, "unknown job")
 
     @app.get("/api/jobs/{job_id}/output")
     def output(job_id: str):
+        try:
+            if admission.get(job_id)["status"] != "complete":
+                raise HTTPException(409, "request is not complete")
+        except KeyError:
+            pass  # CLI-created results have a pipeline journal but no API receipt.
         try:
             if journal.get(job_id)["status"] != "complete":
                 raise HTTPException(409, "output is not ready")

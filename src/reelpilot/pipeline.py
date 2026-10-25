@@ -56,7 +56,10 @@ def run_job(library: Library, retriever, journal: Journal, job_id: str, spec: Qu
                               lambda: probe(directory/"output.mp4"))
         result = {"job_id": job_id, "plan": compiled["plan"], "validation": validation,
                   "media": media, "render": rendered["metadata"], "status": "complete"}
-        (directory/"result.json").write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+        final = directory/"result.json"
+        partial = directory/f"result.{owner}.partial.json"
+        partial.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+        journal.publish(job_id, owner, partial, final)
         journal.release(job_id, owner)
         return result
     except Exception as exc:

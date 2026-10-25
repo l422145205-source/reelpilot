@@ -6,8 +6,6 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/"src"))
-if (ROOT/".runtime/site").exists():
-    sys.path.insert(0, str(ROOT/".runtime/site"))
 
 from reelpilot.library import Library, save_library
 from reelpilot.schema import Asset, Segment

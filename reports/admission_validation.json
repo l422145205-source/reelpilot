@@ -1,0 +1,46 @@
+{
+  "scope": "Controlled in-process HTTP handlers + SQLite + actual FFmpeg. Original generated geometric media; no LLM/embedding inference, human users, subjective quality score or production throughput measurement.",
+  "environment": {
+    "python": "3.13.9",
+    "platform": "Windows"
+  },
+  "burst": {
+    "workers": 1,
+    "max_inflight": 3,
+    "requests": 8,
+    "http_statuses": [
+      202,
+      202,
+      202,
+      429,
+      429,
+      429,
+      429,
+      429
+    ],
+    "accepted_completed": 3,
+    "capacity_rejected": 5,
+    "duplicate_status": 409,
+    "changed_brief_status": 409
+  },
+  "verified_replay": {
+    "render_attempts_initial": 1,
+    "render_attempts_after_identical_replay": 1,
+    "render_attempts_after_corruption_repair": 2
+  },
+  "preplanning_failure": {
+    "original_status": "failed",
+    "fresh_process_status": "failed",
+    "error": "no local planning model configured"
+  },
+  "output": {
+    "duration": 8.021333,
+    "width": 640,
+    "height": 360
+  },
+  "checks_passed": true,
+  "limits": [
+    "Lease expiry and final publication ownership are tested with controlled injection.",
+    "No power-loss durability, multi-host queue, automatic restart or new model-quality claim."
+  ]
+}

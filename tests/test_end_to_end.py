@@ -56,3 +56,26 @@ def test_api_source_seek_search_and_completed_output(media_library, tmp_path):
         assert client.get("/api/jobs/api-job/output").headers["content-type"] == "video/mp4"
         request["brief"]["text"] = "dragon"
         assert client.post("/api/jobs", json=request).status_code == 409
+
+
+def test_final_manifest_is_fenced_and_recoverable(media_library,tmp_path,monkeypatch):
+    from reelpilot.journal import BusyJob
+    journal=Journal(tmp_path/'final-fence')
+    spec=explicit_spec(Brief(text='forest;robot',budget_seconds=8))
+    retriever=Retriever(media_library)
+    publish=journal.publish
+    def steal(job,owner,temporary,destination):
+        if destination.name=='result.json':
+            with journal.connect() as db:
+                db.execute('UPDATE jobs SET owner=?,lease_until=? WHERE id=?',
+                           ('successor',time.time()+60,job))
+        return publish(job,owner,temporary,destination)
+    monkeypatch.setattr(journal,'publish',steal)
+    with pytest.raises(BusyJob):
+        run_job(media_library,retriever,journal,'fence',spec,mode='lexical')
+    assert not (journal.root/'fence/result.json').exists()
+    assert journal.get('fence')['status']=='running'
+    with journal.connect() as db:db.execute('UPDATE jobs SET lease_until=0 WHERE id=?',('fence',))
+    monkeypatch.setattr(journal,'publish',publish)
+    assert run_job(media_library,retriever,journal,'fence',spec,mode='lexical')['status']=='complete'
+    assert next(s for s in journal.get('fence')['stages'] if s['stage']=='render')['attempts']==1

@@ -12,6 +12,8 @@
 
 ## 项目重点
 
+v0.2 补齐规划前的持久请求回执、跨实例容量核对、失败追溯与过期请求保护；最终结果清单也采用所有权校验后的原子发布。[设计与可复现实验](docs/runtime-reliability.md) · [代码追问入口](docs/interview-walkthrough.md) · [项目索引](docs/portfolio.md)
+
 - **时间对齐的多模态索引**：Whisper 词级时间戳、六秒窗口、中点帧；Qwen3-VL-Embedding-2B 构建画面、对白、联合内容三种索引，保留素材哈希、时间区间和授权来源。
 - **有约束的 Agent 工具链**：Qwen3-0.6B + LM Format Enforcer 生成 Schema 约束目标；Beam Search 在时长上限、片段数和不重叠约束下编译 `EditPlan`，独立校验后才执行固定参数的 FFmpeg 工具。
 - **可恢复执行**：SQLite 幂等请求、所有权租约、心跳与阶段日志；owner 校验和原子文件发布阻止过期 worker 覆盖结果，重试复用哈希验证后的产物。
@@ -84,7 +86,7 @@ reelpilot serve --collection data/index --jobs data/jobs --embedding-model .runt
 
 这组问题以画面需求为主，无法据此判断对白路由的收益。默认采用按目标通道选视图的规则；不宣称统计显著或可泛化的提升。查询编码耗时中位数约 30.5 ms，**不含模型加载，不是完整问答或剪辑延迟**。
 
-完成三次真实媒体运行，包括一次渲染后主动中断再恢复；该次日志记录渲染只执行一次，恢复命中缓存。另有 **41 项 CPU 测试**覆盖契约、越界、竞争租约、过期发布、缓存损坏、真实渲染和 API。详见[实验报告](docs/experiments.md)、[原始排名](reports/retrieval_pilot.json)、[真实运行日志](reports/real_runs.json)。
+完成三次真实媒体运行，包括一次渲染后主动中断再恢复；该次日志记录渲染只执行一次，恢复命中缓存。v0.2 在原有 CPU 测试上补充请求容量、规划失败持久化、跨实例竞争和最终清单发布的恢复测试。测试结果见 Actions 与 [本地日志](reports/career_hardening_tests.txt)。详见[实验报告](docs/experiments.md)、[原始排名](reports/retrieval_pilot.json)、[真实运行日志](reports/real_runs.json)。
 
 ## 实现边界
 

@@ -8,7 +8,8 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[1]
 TEXT_SUFFIXES = {".py", ".toml", ".yml", ".md", ".json", ".html", ".css", ".js", ".txt"}
 TOP = ["README.md", "pyproject.toml", "LICENSE", "THIRD_PARTY.md", ".gitignore", "Dockerfile", ".dockerignore"]
-REPORTS = ["corpus.json", "retrieval_pilot.json", "real_planner.json", "real_runs.json", "validation.json"]
+REPORTS = ["corpus.json", "retrieval_pilot.json", "real_planner.json", "real_runs.json", "validation.json",
+           "admission_validation.json", "career_hardening_tests.txt"]
 
 
 def build():
@@ -17,7 +18,8 @@ def build():
     paths = [ROOT/p for p in TOP]
     for folder in ["src", "tests", "scripts", "docs", ".github", "examples"]:
         paths.extend(p for p in (ROOT/folder).rglob("*") if p.is_file()
-                     and "__pycache__" not in p.parts and p.suffix != ".pyc")
+                     and "__pycache__" not in p.parts and p.suffix != ".pyc"
+                     and not any(part.endswith('.egg-info') for part in p.parts))
     paths.extend(ROOT/"reports"/p for p in REPORTS)
     entries = []
     for source in sorted(set(paths)):
