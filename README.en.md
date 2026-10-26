@@ -44,10 +44,16 @@ Open <http://127.0.0.1:8765>, use explicit planning and lexical retrieval, and e
 | Execution | Fixed-argument FFmpeg tools; content-verified stage replay; request and pipeline ownership leases |
 | Task control | Persistent cancellation, attempt deadlines, atomic completion decisions, optional per-job worker processes |
 | Model resources | Bounded FIFO admission, fingerprinted LRU query vectors, same-key single-flight, opt-in resident planner |
+| MCP integration | Local stdio, current/legacy protocol negotiation, bounded read tools, opt-in render/cancel, durable receipt recovery across client processes |
 
 The workbench supports source seeking, candidate inspection, progress, cancellation, playback and edit-plan export. A [saved 12-second result](examples/recovery-preview.mp4) and [retrieval frames](examples/retrieval-preview.jpg) are available without running models; source attribution is in [THIRD_PARTY.md](THIRD_PARTY.md).
 
 ## Reproduce the engineering evidence
+
+For tool integration with an MCP host, install `pip install -e '.[mcp]'` and see
+the [MCP guide](docs/mcp.md). Default tools are read-only; enabling rendering uses
+the API's original durable IDs, worker processes and stage journal. Actual stdio
+disconnect/reconnect and FFmpeg integration evidence is included, without a GPU.
 
 ```bash
 python -m pip install -e '.[dev]'

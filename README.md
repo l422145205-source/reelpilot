@@ -14,6 +14,8 @@
 
 ## 项目重点
 
+v0.5 新增本地 **MCP v2 工具接入**：默认只读检索与状态查询；显式开启后复用原任务队列提交/取消剪辑。真实 stdio 子进程断开后可通过原任务 ID 找回结果，同请求重放复用已验证产物。[接入与协议证据](docs/mcp.md)
+
 v0.4 深化模型资源管理：取消感知的 FIFO 入口、有界查询缓存与同请求计算合并、可选规划器驻留、生成步控制，以及服务退出后恢复。[模型资源设计与证据](docs/model-resources.md) · [运行控制](docs/runtime-controls.md) · [代码追问入口](docs/interview-walkthrough.md)
 
 - **时间对齐的多模态索引**：Whisper 词级时间戳、六秒窗口、中点帧；Qwen3-VL-Embedding-2B 构建画面、对白、联合内容三种索引，保留素材哈希、时间区间和授权来源。
@@ -132,6 +134,7 @@ python scripts/validate_generation_control.py
 
 ## 进一步阅读
 
+- [MCP 接入、幂等调用与跨会话恢复](docs/mcp.md)
 - [技术架构与模块](docs/architecture.md)
 - [实验设计、消融与失败分析](docs/experiments.md)
 - [产品目标与验收范围](docs/product-brief.md)

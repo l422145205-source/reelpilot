@@ -1,0 +1,21 @@
+{
+  "scenario": "actual stdio MCP processes -> local HTTP API -> isolated worker -> FFmpeg",
+  "mcp_sdk": "2.2.0",
+  "protocol_versions": [
+    "2026-07-28",
+    "2025-11-25"
+  ],
+  "synthetic_original_media": true,
+  "pretrained_model_or_network_api_used": false,
+  "first_render_attempts": 1,
+  "replay_render_attempts": 1,
+  "receipt_recovered_in_new_stdio_process": true,
+  "conflicting_payload_rejected": true,
+  "completed_job_not_retroactively_cancelled": true,
+  "output_media": {
+    "width": 640,
+    "height": 360,
+    "duration": 8.021333
+  },
+  "output_sha256": "3d11d7c4af4bbded7b0b4fea6e5e0601046b692807f08acb9eee48f6d60f7b95"
+}
