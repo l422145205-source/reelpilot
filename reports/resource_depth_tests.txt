@@ -1,5 +1,5 @@
 OS: Windows
 Python: 3.13.9
-102 passed in 29.12s
-JUnit SHA256: e63d604fc8280bc80a27bdb238df1a10e0ca7409330e5c4a6aaf38104405473e
+103 passed in 33.16s
+JUnit SHA256: e3827b91b4d2faa46d8c40fd855893791cf5fbc472c5f268c07773f9065154cd
 Full raw JUnit/log and test media stay in local scratch. Reproduce: python scripts/validate_resources.py

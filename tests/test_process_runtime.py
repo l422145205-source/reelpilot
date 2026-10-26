@@ -166,7 +166,10 @@ def test_hard_kill_recovers_verified_render_without_serving_uncommitted_result(r
         with TestClient(create_app(real_library.root, journal.root)) as c:
             assert c.get("/api/jobs/crash/output").status_code == 409
             assert "result" not in c.get("/api/jobs/crash").json()
-        new = queue.reserve("crash", body, timeout_seconds=30)
+        # Only the crashed attempt needs a deliberately short expiry. Recovery
+        # is not a sub-second heartbeat scheduling benchmark on a shared runner.
+        recovery_queue = Admission(journal, ttl=30, interval=0.15)
+        new = recovery_queue.reserve("crash", body, timeout_seconds=30)
         new.start()
         try:
             run_isolated(new, body, real_library)

@@ -24,6 +24,7 @@ from .control import (
     guard_request,
     terminal_status,
     requested_error,
+    guard_row,
 )
 
 
@@ -189,6 +190,19 @@ class Ticket:
         with self.admission.journal.connect() as db:
             row = db.execute("SELECT owner,status FROM submissions WHERE job=?", (self.job,)).fetchone()
         return bool(row and row["owner"] == self.owner and row["status"] == "complete")
+
+    def worker_state(self):
+        with self.admission.journal.connect() as db:
+            row = db.execute(
+                "SELECT owner,status,lease_until,cancel_requested,cancel_at,deadline "
+                "FROM submissions WHERE job=?",
+                (self.job,),
+            ).fetchone()
+        if row and row["owner"] == self.owner and row["status"] == "complete":
+            return "complete"
+        self.admission.journal.runtime_check()
+        guard_row(row, self.owner)
+        return "active"
 
     def _update(self, status, phase, error=None):
         now = time.time()

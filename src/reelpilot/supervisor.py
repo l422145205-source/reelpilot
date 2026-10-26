@@ -53,12 +53,10 @@ def run_isolated(
 
             def check():
                 nonlocal completed_at
-                if ticket.completed_by_self():
+                if ticket.worker_state() == "complete":
                     completed_at = completed_at or time.monotonic()
                     if time.monotonic() - completed_at > 5:
                         raise TimeoutError("completed worker cleanup exceeded grace")
-                else:
-                    ticket.guard()
 
             code = child.wait(check=check, timeout=3605)
             if child.stdout.total > 65536:

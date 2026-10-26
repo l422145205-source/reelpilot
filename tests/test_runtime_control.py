@@ -230,3 +230,56 @@ def test_postcommit_cleanup_error_is_observable_without_rewriting_completion(tmp
     assert q.get("job")["status"] == j.get("job")["status"] == "complete"
     event = next(e for e in j.get("job")["events"] if e["event"] == "postcommit_error")
     assert "ProcessCleanupError" in event["detail"]
+
+
+def test_supervisor_completion_race_uses_one_state_snapshot(tmp_path, monkeypatch):
+    from contextlib import contextmanager
+
+    for name, legacy in [("legacy-peek", True), ("single-snapshot", False)]:
+        j, q, t, owner = linked(tmp_path, name)
+        partial = j.root / (name + ".partial")
+        partial.write_text("{}")
+        target = j.root / (name + ".json")
+        original = j.connect
+        injected = [False]
+
+        @contextmanager
+        def connect():
+            with original() as db:
+
+                class Proxy:
+                    def execute(self, sql, args=()):
+                        cursor = db.execute(sql, args)
+                        if (
+                            sql.startswith("SELECT owner,status")
+                            and "FROM submissions" in sql
+                            and not injected[0]
+                        ):
+
+                            class OneRow:
+                                def fetchone(self):
+                                    row = cursor.fetchone()
+                                    injected[0] = True
+                                    # Commit completion after the observer has read
+                                    # its snapshot, before it validates/acts on it.
+                                    j.finalize(name, owner, partial, target)
+                                    return row
+
+                            return OneRow()
+                        return cursor
+
+                    def __getattr__(self, key):
+                        return getattr(db, key)
+
+                yield Proxy()
+
+        with monkeypatch.context() as patch:
+            patch.setattr(j, "connect", connect)
+            if legacy:
+                assert not t.completed_by_self()
+                with pytest.raises(BusyJob):
+                    t.guard()  # Reproduce the old two-read bug.
+            else:
+                assert t.worker_state() == "active"
+                assert t.worker_state() == "complete"
+        assert injected[0] and q.get(name)["status"] == "complete"

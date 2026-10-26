@@ -6,30 +6,30 @@
     "python": "3.13.9"
   },
   "tests": {
-    "passed": 102,
+    "passed": 103,
     "failed_or_skipped": 0,
-    "junit_sha256": "e63d604fc8280bc80a27bdb238df1a10e0ca7409330e5c4a6aaf38104405473e"
+    "junit_sha256": "e3827b91b4d2faa46d8c40fd855893791cf5fbc472c5f268c07773f9065154cd"
   },
   "cases": [
     {
       "case": "cancel_running_ffmpeg",
       "instrumentation": "trusted long-running FFmpeg worker",
-      "control_to_ack_seconds": 0.03555000000051223,
+      "control_to_ack_seconds": 0.03610620000108611,
       "worker_exited_before_ack": true,
       "ffmpeg_exited_before_ack": true,
       "status": "cancelled"
     },
     {
       "case": "real_process_success",
-      "seconds": 1.4925904999981867,
+      "seconds": 1.7437058000068646,
       "status": "complete"
     },
     {
       "case": "render_committed",
       "fault": "OS hard kill",
       "expiry": "elapsed request lease",
-      "lease_wait_seconds": 0.9979883000050904,
-      "recovery_seconds": 0.7094432000012603,
+      "lease_wait_seconds": 0.953613999998197,
+      "recovery_seconds": 0.9473691000021063,
       "render_commits": 1,
       "uncommitted_result_served": false,
       "status": "complete"
@@ -38,8 +38,8 @@
       "case": "result_replaced_before_commit",
       "fault": "OS hard kill",
       "expiry": "elapsed request lease",
-      "lease_wait_seconds": 0.00585680000949651,
-      "recovery_seconds": 2.647646999990684,
+      "lease_wait_seconds": 0.9142338999954518,
+      "recovery_seconds": 1.0717941999901086,
       "render_commits": 1,
       "uncommitted_result_served": false,
       "status": "complete"
@@ -48,14 +48,14 @@
       "case": "supervisor_hard_kill",
       "fault": "kill direct supervisor only",
       "mechanism": "Windows Job Object",
-      "descendant_exit_seconds": 0.06321020000905264,
+      "descendant_exit_seconds": 0.0221387999918079,
       "worker_exited": true,
       "ffmpeg_exited": true
     },
     {
       "case": "timeout_running_ffmpeg",
       "instrumentation": "trusted long-running FFmpeg worker",
-      "control_to_ack_seconds": 0.3223969999962719,
+      "control_to_ack_seconds": 0.32832909999706317,
       "worker_exited_before_ack": true,
       "ffmpeg_exited_before_ack": true,
       "status": "timed_out"
@@ -79,7 +79,7 @@
   "resource_cases": [
     {
       "case": "real_ffmpeg_drain_restart",
-      "shutdown_to_interrupted_seconds": 0.05831940000643954,
+      "shutdown_to_interrupted_seconds": 0.05743399998755194,
       "worker_exited": true,
       "ffmpeg_exited": true,
       "restart_status": "complete",

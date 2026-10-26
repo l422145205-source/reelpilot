@@ -37,13 +37,21 @@ def guard_request(db, job, owner, *, now=None):
         "SELECT owner,lease_until,status,cancel_requested,cancel_at,deadline " "FROM submissions WHERE job=?",
         (job,),
     ).fetchone()
+    guard_row(row, owner, now=now)
+
+
+def guard_row(row, owner, *, now=None):
+    """Validate one snapshot; callers must not combine separate state reads."""
+    now = time.time() if now is None else now
     if (
         not row
         or row["owner"] != owner
         or row["lease_until"] < now
         or row["status"] not in ("queued", "running")
     ):
-        raise BusyJob("request ownership expired or was replaced")
+        status = row["status"] if row else "missing"
+        expired = bool(row and row["lease_until"] < now)
+        raise BusyJob(f"request ownership expired or was replaced (status={status}, lease_expired={expired})")
     error = requested_error(row, now)
     if error is not None:
         raise error
