@@ -10,6 +10,8 @@ data/raw/
 data/index/
 data/jobs/
 data/test_runtime/
+data/runtime-validation/
+data/runtime-benchmark/
 *.sqlite*
 *.partial*
 *.log
