@@ -1,5 +1,7 @@
 # ReelPilot
 
+[English](README.en.md) · [参与改进](CONTRIBUTING.md) · [英文技术案例](docs/engineering/cancellation-and-completion.md)
+
 **面向文娱素材的多模态检索与可恢复剪辑 Agent**
 
 [![CPU CI](https://github.com/l422145205-source/reelpilot/actions/workflows/ci.yml/badge.svg)](https://github.com/l422145205-source/reelpilot/actions/workflows/ci.yml)
@@ -33,6 +35,8 @@ v0.4 深化模型资源管理：取消感知的 FIFO 入口、有界查询缓存
 ## 五分钟运行：不需要模型或 GPU
 
 Python 3.11+；推荐先在独立虚拟环境安装。此模式生成原创的四场景测试视频，使用明确目标和关键词检索，**不调用大模型**。
+
+安装后可先运行 `reelpilot selfcheck`：生成原创视频，验证中断后恢复、相同请求重放与损坏产物修复，打印结果目录和 JSON。每次使用新的独立目录，保留已有文件；不下载模型。这个命令检查安装和执行链路，使用 Python 控制性异常，不替代后面的真实进程强杀实验。[实际自检报告示例](examples/selfcheck-report.json)
 
 ```bash
 python -m venv .venv

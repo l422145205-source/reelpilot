@@ -7,7 +7,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 TEXT_SUFFIXES = {".py", ".toml", ".yml", ".md", ".json", ".html", ".css", ".js", ".txt"}
-TOP = ["README.md", "pyproject.toml", "LICENSE", "THIRD_PARTY.md", ".gitignore", "Dockerfile", ".dockerignore"]
+TOP = ["README.md", "README.en.md", "CONTRIBUTING.md", "pyproject.toml", "LICENSE", "THIRD_PARTY.md", ".gitignore", "Dockerfile", ".dockerignore"]
 REPORTS = ["corpus.json", "retrieval_pilot.json", "real_planner.json", "real_runs.json", "validation.json",
            "admission_validation.json", "career_hardening_tests.txt",
            "runtime_fault_validation.json", "runtime_backend_benchmark.json", "runtime_depth_tests.txt",

@@ -1,0 +1,33 @@
+name: Reproducible bug
+description: A runtime, media, retrieval or documentation problem with a minimal reproducer.
+body:
+  - type: markdown
+    attributes:
+      value: Please use synthetic or publicly licensed media and omit credentials/private files.
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: OS, Python version, commit or package version
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Minimal command or request
+      description: Include whether it also happens with reelpilot selfcheck or the model-free demo.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Expected and observed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Error and evidence
+      description: Identify real model calls, test doubles, injected delays and process-fault checkpoints separately.
+      render: text

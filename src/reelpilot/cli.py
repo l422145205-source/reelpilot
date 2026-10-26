@@ -7,6 +7,8 @@ import uuid
 def main():
     parser = argparse.ArgumentParser(description="ReelPilot multimodal video editing agent")
     sub = parser.add_subparsers(dest="command", required=True)
+    check = sub.add_parser("selfcheck", help="verify real media, recovery and repair; no models or downloads")
+    check.add_argument("--workspace", type=Path, default=Path("data/selfcheck"))
     demo = sub.add_parser("demo", help="create original synthetic media, no model/download required")
     demo.add_argument("--collection", type=Path, default=Path("data/demo"))
     ingest = sub.add_parser("ingest")
@@ -58,7 +60,12 @@ def main():
             p.add_argument("--job-id", default=None)
             p.add_argument("--interrupt-after", choices=["verify", "render"])
     args = parser.parse_args()
-    if args.command == "demo":
+    if args.command == "selfcheck":
+        from .selfcheck import check_installation
+
+        directory, report = check_installation(args.workspace)
+        print(json.dumps({"directory": str(directory), "report": report}, ensure_ascii=False, indent=2))
+    elif args.command == "demo":
         from .demo import make_demo
 
         library = make_demo(args.collection)

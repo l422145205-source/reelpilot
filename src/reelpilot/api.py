@@ -22,6 +22,7 @@ from .retrieval import Retriever
 from .schema import Identifier, StrictModel, JobRequest
 from .resources import ModelResources, VectorCache
 from .control import ResourceBusy, ServiceDraining
+from . import __version__
 
 
 class Search(StrictModel):
@@ -116,7 +117,7 @@ def create_app(
             await asyncio.to_thread(pool.shutdown, wait=True)
             await asyncio.to_thread(resources.close)
 
-    app = FastAPI(title="ReelPilot", version="0.4.0", lifespan=lifespan)
+    app = FastAPI(title="ReelPilot", version=__version__, lifespan=lifespan)
     app.state.resources = resources
 
     def retriever(mode, *, check=None):
@@ -136,7 +137,7 @@ def create_app(
             "segments": len(library.segments),
             "dense_configured": bool(encoder_path),
             "planner_configured": bool(planner_path),
-            "version": "0.4.0",
+            "version": __version__,
             "max_inflight": max_inflight,
             "workers": workers,
             "execution_backend": execution_backend,

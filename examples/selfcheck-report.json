@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "kind": "real-media-cpu-selfcheck",
+  "models_loaded": false,
+  "retrieval_mode": "lexical",
+  "planner": "explicit",
+  "interruption": "controlled Python exception, not OS kill",
+  "checks": {
+    "media_generation": true,
+    "interruption_receipt": true,
+    "verified_render_resume": true,
+    "identical_replay": true,
+    "corruption_repair": true,
+    "decoded_output": true
+  },
+  "render_commits_before_corruption": 1,
+  "render_commits_after_repair": 2,
+  "output": {
+    "path": "jobs/check/output.mp4",
+    "duration": 8.021333,
+    "width": 640,
+    "height": 360,
+    "sha256": "3d11d7c4af4bbded7b0b4fea6e5e0601046b692807f08acb9eee48f6d60f7b95"
+  },
+  "limits": [
+    "installation and execution contracts only",
+    "does not test model semantics",
+    "real process-death experiments are in scripts/validate_resources.py"
+  ]
+}
