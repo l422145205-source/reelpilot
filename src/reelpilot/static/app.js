@@ -1,4 +1,4 @@
-const $=id=>document.getElementById(id);let library={},currentPlan=null,pollTimer=null,lastSubmission=null;
+const $=id=>document.getElementById(id);let library={},currentPlan=null,pollTimer=null,lastSubmission=null,activeJob=null;
 const clock=s=>`${Math.floor(s/60).toString().padStart(2,'0')}:${Math.floor(s%60).toString().padStart(2,'0')}`;
 async function api(path,body){const r=await fetch(path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});const data=await r.json();if(!r.ok)throw Error(typeof data.detail==='string'?data.detail:JSON.stringify(data.detail));return data;}
 function error(message){$('error').textContent=message;$('error').hidden=!message;}
@@ -6,8 +6,51 @@ function preview(segment){const v=$('preview');v.src=`/api/assets/${encodeURICom
 function cards(hits){$('candidates').replaceChildren();$('candidateCount').textContent=`${hits.length} 个片段`;for(const hit of hits){const s=hit.segment||hit;const card=document.createElement('button');card.className='card';const img=document.createElement('img');img.src=`/api/frames/${encodeURIComponent(s.id)}`;img.alt=`${s.asset_id} ${clock(s.start)}`;img.loading='lazy';const cap=document.createElement('div');cap.className='caption';const time=document.createElement('span');time.className='time';time.textContent=`${s.asset_id} · ${clock(s.start)}–${clock(s.end)}`;const p=document.createElement('p');p.textContent=s.transcript||'无语音文本 · 依据画面语义检索';cap.append(time,p);card.append(img,cap);card.onclick=()=>preview(s);$('candidates').append(card);}if(!hits.length){const div=document.createElement('div');div.className='empty';div.textContent='没有找到匹配片段，请尝试更明确的画面或对话描述。';$('candidates').append(div);}}
 function showPlan(plan){currentPlan=plan;$('planSection').hidden=false;$('timeline').replaceChildren();let offset=0;for(const c of plan.clips){const el=document.createElement('div');el.className='timeline-clip';el.textContent=`${clock(offset)} — ${clock(offset+c.end-c.start)}`;const small=document.createElement('small');small.textContent=`${c.asset_id} ${clock(c.start)}–${clock(c.end)} · ${c.goal_ids.join(', ')}`;el.append(small);$('timeline').append(el);offset+=c.end-c.start;}$('planNote').textContent=`计划 ${offset.toFixed(1)} 秒 / 上限 ${plan.spec.budget_seconds} 秒 · 每段均绑定来源时间区间；相关性需要人工确认。`;cards(plan.clips.map(c=>library.segments.find(s=>s.id===c.segment_id)).filter(Boolean));}
 const stages={compile:'检索并编译剪辑计划',verify:'校验来源、时长、重叠与目标覆盖',render:'执行剪辑并生成视频',probe:'检查输出媒体'};
-async function poll(id){try{const job=await api(`/api/jobs/${id}`);$('jobStatus').textContent={queued:'排队中',running:(job.submission?.phase||job.phase)==='planning'?'正在解析需求':'正在执行剪辑',complete:'已完成',failed:'执行失败',interrupted:'任务中断，可重试'}[job.status]||job.status;$('events').replaceChildren();for(const e of job.events||[]){const li=document.createElement('li');li.textContent=({stage_started:'开始：',stage_completed:'完成：',cache_hit:'复用已校验结果：',claimed:'任务已接收',failed:'执行失败：'}[e.event]||e.event)+(stages[e.detail]||e.detail||'');$('events').append(li);}if(job.status==='complete'){$('generate').disabled=false;$('generate').textContent='生成剪辑';clearTimeout(pollTimer);showPlan(job.result.plan);$('preview').src=`/api/jobs/${id}/output`;$('preview').load();$('viewerTitle').textContent='剪辑结果';$('viewerLabel').textContent=`${job.result.media.duration.toFixed(2)} 秒`;$('sourceInfo').textContent='剪辑已完成。下方片段保留原始素材与时间戳，可逐段核对。';return;}if(['failed','interrupted'].includes(job.status)){$('generate').textContent='重试此任务';throw Error(job.error||'任务失败，请检查配置后重试。');}pollTimer=setTimeout(()=>poll(id),1500);}catch(e){error(e.message);$('generate').disabled=false;}}
-$('generate').onclick=async()=>{error('');$('generate').disabled=true;try{const body={brief:{text:$('brief').value,budget_seconds:Number($('budget').value),max_clips:Number($('maxClips').value),chronological:$('chronological').checked,asset_ids:$('assetFilter').value?[$('assetFilter').value]:[]},mode:$('mode').value,provider:$('provider').value};const signature=JSON.stringify(body);if(!lastSubmission||lastSubmission.signature!==signature){lastSubmission={signature,job_id:crypto.randomUUID().replaceAll('-','')};}body.job_id=lastSubmission.job_id;const job=await api('/api/jobs',body);clearTimeout(pollTimer);poll(job.job_id);}catch(e){error(e.message);$('generate').disabled=false;}};
+function endPolling(){clearTimeout(pollTimer);activeJob=null;$('cancelJob').hidden=true;$('generate').disabled=false;}
+async function poll(id){
+  try{
+    const job=await api(`/api/jobs/${id}`);
+    const phase=job.submission?.phase||job.phase;
+    $('jobStatus').textContent={queued:'排队中',running:phase==='cancelling'?'正在取消，等待执行器退出':phase==='planning'?'正在解析需求':'正在执行剪辑',complete:'已完成',failed:'执行失败',interrupted:'任务中断，可重试',cancelled:'已取消',timed_out:'执行超时，可重试'}[job.status]||job.status;
+    $('events').replaceChildren();
+    for(const e of job.events||[]){
+      const li=document.createElement('li');
+      li.textContent=({stage_started:'开始：',stage_completed:'完成：',cache_hit:'复用已校验结果：',claimed:'任务已接收',failed:'执行失败：',cancel_requested:'已收到取消请求',worker_started:'独立执行器已启动',worker_reaped:'独立执行器已退出：',request_complete:'任务完成：',request_cancelled:'任务已取消',request_timed_out:'任务超时'}[e.event]||e.event)+(stages[e.detail]||e.detail||'');
+      $('events').append(li);
+    }
+    if(job.status==='complete'){
+      endPolling();$('generate').textContent='生成剪辑';showPlan(job.result.plan);
+      $('preview').src=`/api/jobs/${id}/output`;$('preview').load();$('viewerTitle').textContent='剪辑结果';
+      $('viewerLabel').textContent=`${job.result.media.duration.toFixed(2)} 秒`;
+      $('sourceInfo').textContent='剪辑已完成。下方片段保留原始素材与时间戳，可逐段核对。';return;
+    }
+    if(['failed','interrupted','timed_out','cancelled'].includes(job.status)){
+      endPolling();
+      if(job.status==='cancelled'){lastSubmission=null;$('generate').textContent='新建剪辑任务';}
+      else $('generate').textContent='重试此任务';
+      error(job.status==='cancelled'?'任务已取消。再次生成将创建新任务。':job.error||'任务失败，请检查配置后重试。');return;
+    }
+    pollTimer=setTimeout(()=>poll(id),1500);
+  }catch(e){error(e.message);$('generate').disabled=false;}
+}
+$('generate').onclick=async()=>{
+  error('');$('generate').disabled=true;
+  try{
+    const body={brief:{text:$('brief').value,budget_seconds:Number($('budget').value),max_clips:Number($('maxClips').value),chronological:$('chronological').checked,asset_ids:$('assetFilter').value?[$('assetFilter').value]:[]},mode:$('mode').value,provider:$('provider').value};
+    const signature=JSON.stringify(body);
+    if(!lastSubmission||lastSubmission.signature!==signature)lastSubmission={signature,job_id:crypto.randomUUID().replaceAll('-','')};
+    body.job_id=lastSubmission.job_id;
+    const job=await api('/api/jobs',body);activeJob=job.job_id;
+    $('cancelJob').hidden=false;$('cancelJob').disabled=false;$('cancelJob').textContent='取消当前任务';
+    clearTimeout(pollTimer);poll(job.job_id);
+  }catch(e){error(e.message);$('generate').disabled=false;}
+};
+$('cancelJob').onclick=async()=>{
+  if(!activeJob)return;
+  $('cancelJob').disabled=true;
+  try{const response=await api(`/api/jobs/${activeJob}/cancel`,{});$('cancelJob').textContent=response.requested?'取消请求已发送':'任务已结束';}
+  catch(e){error(e.message);$('cancelJob').disabled=false;}
+};
 $('searchButton').onclick=async()=>{error('');$('searchButton').disabled=true;try{const data=await api('/api/search',{query:$('search').value,mode:$('mode').value,view:$('searchView').value,limit:9,asset_ids:$('assetFilter').value?[$('assetFilter').value]:[]});cards(data.hits);}catch(e){error(e.message);}finally{$('searchButton').disabled=false;}};
 $('provider').onchange=()=>{$('providerHint').textContent=$('provider').value==='explicit'?'明确目标模式：每个分号分隔一项目标，例如「city; robot; conversation」。':'模型将需求拆成独立检索目标，时间与输出文件由程序校验。';};
 document.querySelectorAll('[data-brief]').forEach(button=>button.onclick=()=>{$('brief').value=button.dataset.brief;});

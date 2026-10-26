@@ -28,3 +28,25 @@ ReelPilot 将自然语言或明确目标变成可核验的素材检索与粗剪�
 - 在 result.json 发布前注入所有权变化，验证最终清单不被旧线程覆盖，再解释恢复时哪些步骤复用。
 
 相关入口：src/reelpilot/api.py、admission.py、pipeline.py、journal.py；边界与实验见 runtime-reliability.md。
+
+## v0.3 深挖：能沿代码解释的八个问题
+
+**取消 API 返回成功，为什么不能立即说任务停止？** `Admission.cancel` 先持久化意图。排队请求尚未被线程取走，阻塞模型也可能尚未返回；进程模式则需要监督器终止并等待。只有执行器确认后才写 cancelled。名额保留到确认，防止取消操作制造无限 Future 堆积。看 `tests/test_runtime_queue.py`。
+
+**取消与最终提交同时发生，哪一个赢？** 两者争用同一 SQLite 写事务。`Journal.finalize` 检查控制标记，替换清单，再同时更新两层状态；取消先提交则拒绝最终提交，完成先提交则取消返回 requested=false。测试有受控阻塞和 20 组真实线程竞争，不能把 20 组通过解释成任意调度的数学证明。
+
+**文件已经生成，为什么用户还拿不到？** 进程可能死在 rename 后、SQL commit 前。数据库写事务回滚，API 只认可持久终态。实际强杀在磁盘上留下了 result.json，但下载返回 409；恢复检查 render 哈希并复用。没有将进程崩溃测试说成断电事务。
+
+**为什么取消标记不能在重试时直接重置？** 原先的候选实现只检查已确认 cancelled 状态；服务若在确认前退出，标记会被新请求清空。现在 reserve 对尚未确认的取消也检查先后顺序，保留终止意图。这是本轮自查中发现并修正的具体漏洞。
+
+**为什么需要关联两层 owner？** 如果新请求已经接管，旧 pipeline 的租约却还剩很久，新请求不应等待这个失效请求的工作者。claim 在校验新 request owner 后允许替换关联旧请求的 pipeline owner；每次提交仍同时检查两层。token 是不透明随机值，不是分布式单调 fencing counter。
+
+**进程启动门解决什么？** Windows 需要在 worker 启动工具之前把它纳入私有 Job；所以 worker 等 stdin 消息后才导入模型和执行工具。父进程关闭句柄或主动终止时，生命周期边界覆盖其子工具。POSIX 的父进程守护线程是协作机制，调度或 GIL 阻塞会影响检测，不能承诺同等保证。看 `worker.py` 与 `processes.py`。
+
+**为什么日志捕获要单独实现？** 等进程结束再读 stdout/stderr，可能因管道写满互相等待；无限保存输出也会耗尽父进程内存。两条排空线程分别记录总量，仅留各 64 KiB 尾部；测试两路各输出 5 MiB。返回协议单独限制长度、校验 job 身份和数据库完成状态。
+
+**为什么不默认进程模式？** 每次冷导入和加载模型有成本，也损失编码器缓存。当前 CPU 同任务对照逐次保存样本，模型冷加载的额外成本尚未测量。线程复用与进程终止边界是有条件的取舍；引入 Redis、更多 Agent 或更多进程不能自动解决这些边界。
+
+清理失败还有两种情况：尚未完成时，终止确认错误记为 failed，不能假报 cancelled；已经提交完成时，记录 postcommit_error，不能悄悄丢掉错误，也不能倒改已发布结果。对应 `test_unconfirmed_process_cleanup...` 与 `test_postcommit_cleanup_error...`。
+
+复现入口：`python scripts/validate_runtime.py`；追踪完整链路时按 `api.execute → run_request/run_isolated → run_job → Journal.finalize` 阅读。[原始故障摘要](../reports/runtime_fault_validation.json) 与 [实验细节](runtime-fault-lab.md) 能逐项对应上述回答。

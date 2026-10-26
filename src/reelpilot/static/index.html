@@ -14,7 +14,7 @@
 <label for="mode">素材检索</label><select id="mode"><option value="adaptive">按画面／对白目标选择通道</option><option value="lexical">字幕关键词</option><option value="dense">语义检索</option><option value="hybrid">字幕与语义 RRF 融合</option></select>
 <label class="check"><input id="chronological" type="checkbox" checked>保持同一素材内的时间顺序</label>
 <label for="assetFilter">素材范围</label><select id="assetFilter"><option value="">全部素材</option></select>
-<button class="primary" id="generate">检索并生成剪辑 <span>↗</span></button><p class="hint">时间与文件操作受程序约束。检索相关性仍需人工确认。</p>
+<button class="primary" id="generate">检索并生成剪辑 <span>↗</span></button><button class="quiet" id="cancelJob" hidden>取消当前任务</button><p class="hint">时间与文件操作受程序约束。检索相关性仍需人工确认。</p>
 </section>
 <section class="panel secondary"><h2>先找一段素材</h2><div class="searchrow"><input id="search" placeholder="例如：a robot on a bridge"><button id="searchButton">检索</button></div><select id="searchView" aria-label="搜索内容"><option value="image">找画面</option><option value="text">找对白</option><option value="joint">联合内容（实验）</option></select><p class="hint">点击候选片段，即可查看原始素材对应时间。</p></section>
 </aside>

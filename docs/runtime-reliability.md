@@ -2,6 +2,8 @@
 
 v0.2 将请求接收阶段纳入持久化状态管理。旧版本只有规划之后的剪辑阶段写入任务表，规划失败状态保存在进程内字典；进程退出后无法通过 API 查到这类失败。ThreadPoolExecutor 的待执行队列也没有业务容量限制。
 
+本文保留 v0.2 的问题与实验记录；当前 v0.3 增加取消、截止时间、关联 owner、事务化 finalization 与可选进程后端。最新行为以 [控制设计](runtime-controls.md) 与 [真实故障实验](runtime-fault-lab.md) 为准。
+
 ## 处理流程
 
 POST /api/jobs 在 SQLite 的 BEGIN IMMEDIATE 事务中核对原始请求指纹，统计仍有有效租约的排队和运行请求，保存请求回执与 owner。成功返回 202。重复运行中的同一请求返回 409；同一 ID 改变原始 brief 也返回 409；达到容量上限返回 429 和 Retry-After。
@@ -24,6 +26,8 @@ POST /api/jobs 在 SQLite 的 BEGIN IMMEDIATE 事务中核对原始请求指纹�
 请求 owner 防止已经过期的规划工作线程继续进入剪辑阶段或改写后继请求状态。原有 pipeline owner 单独保护阶段缓存和文件发布。两层租约不是分布式事务；进程或磁盘异常后工具可能再次执行，不宣称 exactly-once。
 
 最终 result.json 也通过带 owner 的临时文件和 journal.publish 发布，修复其此前未受所有权校验保护的写入路径。测试在最终发布前主动替换 owner，验证旧线程不能发布；重新接管后复用已经完成的渲染。
+
+v0.3 已将最终清单发布进一步合并到 `Journal.finalize`，同时提交 pipeline 和请求终态，避免与取消操作脱节；原 `publish` 继续保护中间产物。
 
 每个应用实例内部的模型锁串行化本地规划与查询编码，避免两个请求同时加载规划器或调用同一个编码器。它不跨进程协调 GPU。多实例共享 SQLite 的容量验证要求使用一致配置；当前仍定位为单机单实例服务。
 

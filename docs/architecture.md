@@ -49,9 +49,13 @@ SQLite 保存原始请求的幂等键、解析后的请求、阶段结果和事�
 
 worker 通过条件更新取得带过期时间的所有权。阶段提交和文件发布在 SQLite 写事务中校验 owner 与租约；过期 worker 不能发布文件。执行先写 owner 专属尝试目录，再原子替换正式输出。
 
-完成阶段的缓存会检查内容哈希。输出文件被破坏时重新执行渲染。进程崩溃可能导致子进程重复执行；该实现保证有条件的安全重放，不宣称 exactly once。当前控制性故障实验是主动抛出异常，不是断电或机器故障测试。
+完成阶段的缓存会检查内容哈希。输出文件被破坏时重新执行渲染。进程崩溃可能导致子进程重复执行；该实现保证有条件的安全重放，不宣称 exactly once。早期实验主动抛出异常；v0.3 另加入真实 OS 强杀与子进程清理测试，仍不包含断电或机器故障。[故障矩阵与复现](runtime-fault-lab.md)
 
 FFmpeg 只接收程序构造的参数列表，始终 `shell=False`。用户或模型文本不会成为命令。渲染后检查可解码性、时长误差、分辨率及音视频流。
+
+v0.3 将 pipeline owner 关联至 request owner，提交时同时检查取消标记、截止时间和两层所有权。`Journal.finalize` 在同一 SQLite 写事务中处理最终清单替换与两张表的完成状态，与取消操作串行裁决。文件替换后 SQL 提交前死亡时，物理文件不会作为已完成结果提供。
+
+可选独立进程后端在任务启动门之后才导入模型和执行工具，监督器通过受控进程组/Windows Job Object 终止本地工作树，并以双路有界缓冲排空日志。线程后端继续复用模型，阻塞模型调用仅能协作取消。两者取舍与平台边界见 [控制设计](runtime-controls.md)。
 
 ## 模块对应
 
@@ -60,5 +64,6 @@ FFmpeg 只接收程序构造的参数列表，始终 `shell=False`。用户或�
 | 数据与契约 | `schema.py`、`library.py` |
 | 媒体转写与索引 | `ingest.py`、`encoders.py` |
 | 检索和计划 | `retrieval.py`、`planner.py`、`compiler.py` |
-| 执行与恢复 | `journal.py`、`pipeline.py`、`media.py` |
+| 执行与恢复 | `admission.py`、`journal.py`、`pipeline.py`、`control.py` |
+| 进程监督与工具 | `execution.py`、`supervisor.py`、`worker.py`、`processes.py`、`media.py` |
 | 接口和交互 | `api.py`、`static/`、`cli.py` |

@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from threading import RLock
 from typing import Literal
+import math
 import uuid
 
 from fastapi import FastAPI, HTTPException
@@ -17,7 +18,7 @@ from .admission import Admission, QueueFull
 from .library import Library
 from .pipeline import run_job
 from .retrieval import Retriever
-from .schema import Brief, Identifier, StrictModel, QuerySpec, explicit_spec
+from .schema import Identifier, StrictModel, JobRequest
 
 
 class Search(StrictModel):
@@ -28,16 +29,27 @@ class Search(StrictModel):
     asset_ids: list[Identifier] = Field(default_factory=list, max_length=20)
 
 
-class JobRequest(StrictModel):
-    brief: Brief
-    mode: Literal["lexical", "dense", "hybrid", "adaptive"] = "lexical"
-    provider: Literal["explicit", "transformers", "ollama"] = "explicit"
-    job_id: Identifier | None = None
-
-
-def create_app(collection: Path, jobs: Path, *, encoder_path: str | None = None,
-               planner_path: str | None = None, ollama_model="qwen3:4b", device="cuda",
-               workers=2, max_inflight=8):
+def create_app(
+    collection: Path,
+    jobs: Path,
+    *,
+    encoder_path: str | None = None,
+    planner_path: str | None = None,
+    ollama_model="qwen3:4b",
+    device="cuda",
+    workers=2,
+    max_inflight=8,
+    execution_backend="thread",
+    request_timeout=180,
+):
+    if execution_backend not in ("thread", "process"):
+        raise ValueError("unknown execution backend")
+    if (
+        isinstance(request_timeout, bool)
+        or not math.isfinite(request_timeout)
+        or not 0 < request_timeout <= 3600
+    ):
+        raise ValueError("request timeout must be in (0,3600]")
     if workers < 1:
         raise ValueError("workers must be positive")
     library = Library(collection)
@@ -63,7 +75,7 @@ def create_app(collection: Path, jobs: Path, *, encoder_path: str | None = None,
         if encoder is not None:
             encoder.close()
 
-    app = FastAPI(title="ReelPilot", version="0.2.0", lifespan=lifespan)
+    app = FastAPI(title="ReelPilot", version="0.3.0", lifespan=lifespan)
 
     def retriever(mode):
         nonlocal encoder
@@ -73,56 +85,76 @@ def create_app(collection: Path, jobs: Path, *, encoder_path: str | None = None,
             with model_lock, encoder_lock:
                 if encoder is None:
                     from .encoders import QwenEncoder
+
                     encoder = QwenEncoder(encoder_path, device=device)
         return LockedRetriever(Retriever(library, encoder))
 
     @app.get("/api/health")
     def health():
-        return {"status": "ok", "collection_hash": library.hash, "assets": len(library.assets),
-                "segments": len(library.segments), "dense_configured": bool(encoder_path),
-                "planner_configured": bool(planner_path), "version": "0.2.0",
-                "max_inflight": max_inflight, "workers": workers}
+        return {
+            "status": "ok",
+            "collection_hash": library.hash,
+            "assets": len(library.assets),
+            "segments": len(library.segments),
+            "dense_configured": bool(encoder_path),
+            "planner_configured": bool(planner_path),
+            "version": "0.3.0",
+            "max_inflight": max_inflight,
+            "workers": workers,
+            "execution_backend": execution_backend,
+        }
 
     @app.get("/api/library")
     def listing():
-        return {"assets": [a.model_dump(exclude={"path"}) for a in library.assets.values()],
-                "segments": [s.model_dump(exclude={"frame"}) for s in library.segments.values()]}
+        return {
+            "assets": [a.model_dump(exclude={"path"}) for a in library.assets.values()],
+            "segments": [s.model_dump(exclude={"frame"}) for s in library.segments.values()],
+        }
 
     @app.post("/api/search")
     def search(body: Search):
         try:
-            return {"mode": body.mode, "hits": [h.model_dump() for h in retriever(body.mode).search(
-                body.query, mode=body.mode, limit=body.limit, asset_ids=body.asset_ids, view=body.view)]}
+            return {
+                "mode": body.mode,
+                "hits": [
+                    h.model_dump()
+                    for h in retriever(body.mode).search(
+                        body.query, mode=body.mode, limit=body.limit, asset_ids=body.asset_ids, view=body.view
+                    )
+                ],
+            }
         except (ValueError, RuntimeError) as exc:
             raise HTTPException(422, str(exc)) from exc
 
     def execute(ticket, body):
-        job_id = ticket.job
         try:
-            ticket.phase("planning")
-            try:
-                resolved = journal.get(job_id)["spec"]["spec"]
-            except KeyError:
-                resolved = None
-            if resolved is not None:
-                spec = QuerySpec.model_validate(resolved)
-            elif body.provider == "transformers":
-                if not planner_path:
-                    raise ValueError("no local planning model configured")
-                from .planner import transformers_spec
-                with model_lock:
-                    ticket.guard()
-                    spec = transformers_spec(body.brief, planner_path, device=device)
-            elif body.provider == "ollama":
-                from .planner import ollama_spec
-                with model_lock:
-                    ticket.guard()
-                    spec = ollama_spec(body.brief, ollama_model)
+            if execution_backend == "process":
+                from .supervisor import run_isolated
+
+                run_isolated(
+                    ticket,
+                    body.model_dump(exclude={"job_id"}, exclude_none=True),
+                    library,
+                    model_lock=model_lock,
+                    encoder_path=encoder_path,
+                    planner_path=planner_path,
+                    ollama_model=ollama_model,
+                    device=device,
+                )
             else:
-                spec = explicit_spec(body.brief)
-            ticket.guard()
-            ticket.phase("executing")
-            run_job(library, retriever(body.mode), journal, job_id, spec, mode=body.mode)
+                from .execution import run_request
+
+                run_request(
+                    ticket,
+                    body,
+                    library,
+                    retriever_factory=retriever,
+                    model_lock=model_lock,
+                    planner_path=planner_path,
+                    ollama_model=ollama_model,
+                    device=device,
+                    pipeline=run_job,
+                )
             ticket.finish()
         except Exception as exc:
             try:
@@ -136,7 +168,11 @@ def create_app(collection: Path, jobs: Path, *, encoder_path: str | None = None,
     def create_job(body: JobRequest):
         job_id = body.job_id or uuid.uuid4().hex
         try:
-            ticket = admission.reserve(job_id, body.model_dump(exclude={"job_id"}))
+            ticket = admission.reserve(
+                job_id,
+                body.model_dump(exclude={"job_id"}, exclude_none=True),
+                timeout_seconds=body.timeout_seconds or request_timeout,
+            )
         except ValueError as exc:
             raise HTTPException(409, str(exc)) from exc
         except BusyJob as exc:
@@ -152,6 +188,13 @@ def create_app(collection: Path, jobs: Path, *, encoder_path: str | None = None,
             raise HTTPException(503, "worker pool is unavailable") from exc
         return {"job_id": job_id, "status": "queued"}
 
+    @app.post("/api/jobs/{job_id}/cancel", status_code=202)
+    def cancel(job_id: Identifier):
+        try:
+            return admission.cancel(job_id)
+        except KeyError:
+            raise HTTPException(404, "unknown job")
+
     @app.get("/api/jobs/{job_id}")
     def job(job_id: str):
         try:
@@ -162,7 +205,10 @@ def create_app(collection: Path, jobs: Path, *, encoder_path: str | None = None,
             result = journal.get(job_id)
             if result["status"] == "complete" and (receipt is None or receipt["status"] == "complete"):
                 import json
-                result["result"] = json.loads((journal.root/job_id/"result.json").read_text(encoding="utf-8"))
+
+                result["result"] = json.loads(
+                    (journal.root / job_id / "result.json").read_text(encoding="utf-8")
+                )
             if receipt is not None:
                 result["pipeline_status"] = result["status"]
                 result["submission"] = receipt
@@ -186,7 +232,7 @@ def create_app(collection: Path, jobs: Path, *, encoder_path: str | None = None,
                 raise HTTPException(409, "output is not ready")
         except KeyError:
             raise HTTPException(404, "unknown job")
-        return FileResponse(journal.root/job_id/"output.mp4", media_type="video/mp4")
+        return FileResponse(journal.root / job_id / "output.mp4", media_type="video/mp4")
 
     @app.get("/api/assets/{asset_id}")
     def asset(asset_id: str):
@@ -200,7 +246,6 @@ def create_app(collection: Path, jobs: Path, *, encoder_path: str | None = None,
             raise HTTPException(404, "unknown segment")
         return FileResponse(library.frame_path(segment_id), media_type="image/jpeg")
 
-    static = Path(__file__).parent/"static"
+    static = Path(__file__).parent / "static"
     app.mount("/", StaticFiles(directory=static, html=True), name="ui")
     return app
-

@@ -1,4 +1,5 @@
 """Typed boundaries between a language model, retrieval, and media execution."""
+
 from __future__ import annotations
 
 from typing import Annotated, Literal
@@ -70,6 +71,14 @@ class QuerySpec(StrictModel):
         return self
 
 
+class JobRequest(StrictModel):
+    brief: Brief
+    mode: Literal["lexical", "dense", "hybrid", "adaptive"] = "lexical"
+    provider: Literal["explicit", "transformers", "ollama"] = "explicit"
+    job_id: Identifier | None = None
+    timeout_seconds: float | None = Field(default=None, gt=0, le=3600)
+
+
 class Hit(StrictModel):
     segment: Segment
     score: float
@@ -114,7 +123,7 @@ def explicit_spec(brief: Brief) -> QuerySpec:
         for prefix in ["visual:", "dialogue:", "mixed:"]:
             if part.lower().startswith(prefix):
                 channel = prefix[:-1]
-                part = part[len(prefix):].strip()
+                part = part[len(prefix) :].strip()
                 break
         goals.append(Goal(id=f"g{i+1}", query=part, channel=channel))
     return QuerySpec(
@@ -125,4 +134,3 @@ def explicit_spec(brief: Brief) -> QuerySpec:
         asset_ids=brief.asset_ids,
         planner="explicit",
     )
-

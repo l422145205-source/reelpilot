@@ -31,6 +31,18 @@ def main():
         if command == "serve":
             p.add_argument("--port", type=int, default=8765)
             p.add_argument("--host", default="127.0.0.1")
+            p.add_argument(
+                "--execution-backend",
+                choices=["thread", "process"],
+                default="thread",
+                help="process enables per-job termination but cold-loads models",
+            )
+            p.add_argument(
+                "--request-timeout",
+                type=float,
+                default=180,
+                help="attempt deadline in seconds, including queue wait (0,3600]",
+            )
         else:
             p.add_argument("brief")
             p.add_argument("--budget", type=float, default=18)
@@ -41,19 +53,33 @@ def main():
     args = parser.parse_args()
     if args.command == "demo":
         from .demo import make_demo
+
         library = make_demo(args.collection)
-        print(json.dumps({"collection": str(library.root), "hash": library.hash, "segments": len(library.segments)}))
+        print(
+            json.dumps(
+                {"collection": str(library.root), "hash": library.hash, "segments": len(library.segments)}
+            )
+        )
     elif args.command == "ingest":
         from .ingest import ingest_video, transcribe
+
         rows = None
         if args.asr_model:
-            rows = transcribe(args.video, args.asr_model, args.collection/"asr"/(args.id+".json"))
-        library = ingest_video(args.video, args.collection, asset_id=args.id, title=args.title,
-            attribution=args.attribution, license=args.license, transcript_rows=rows)
+            rows = transcribe(args.video, args.asr_model, args.collection / "asr" / (args.id + ".json"))
+        library = ingest_video(
+            args.video,
+            args.collection,
+            asset_id=args.id,
+            title=args.title,
+            attribution=args.attribution,
+            license=args.license,
+            transcript_rows=rows,
+        )
         print("Indexed", len(library.segments), "segments", library.hash)
     elif args.command == "embed":
         from .encoders import QwenEncoder, build_vectors
         from .library import Library
+
         encoder = QwenEncoder(args.model, device=args.device)
         try:
             for view in ["image", "text", "joint"]:
@@ -63,8 +89,16 @@ def main():
     elif args.command == "serve":
         import uvicorn
         from .api import create_app
-        app = create_app(args.collection, args.jobs, encoder_path=args.embedding_model,
-                         planner_path=args.planner_model, device=args.device)
+
+        app = create_app(
+            args.collection,
+            args.jobs,
+            encoder_path=args.embedding_model,
+            planner_path=args.planner_model,
+            device=args.device,
+            execution_backend=args.execution_backend,
+            request_timeout=args.request_timeout,
+        )
         uvicorn.run(app, host=args.host, port=args.port)
     elif args.command == "edit":
         from .library import Library
@@ -72,14 +106,17 @@ def main():
         from .journal import Journal
         from .pipeline import run_job
         from .schema import Brief, explicit_spec
+
         brief = Brief(text=args.brief, budget_seconds=args.budget)
         if args.provider == "transformers":
             if not args.planner_model:
                 parser.error("--planner-model is required for transformers")
             from .planner import transformers_spec
+
             spec = transformers_spec(brief, args.planner_model, args.device)
         elif args.provider == "ollama":
             from .planner import ollama_spec
+
             spec = ollama_spec(brief, "qwen3:4b")
         else:
             spec = explicit_spec(brief)
@@ -89,10 +126,18 @@ def main():
             if not args.embedding_model:
                 parser.error("--embedding-model is required for dense/hybrid")
             from .encoders import QwenEncoder
+
             encoder = QwenEncoder(args.embedding_model, args.device)
         try:
-            result = run_job(library, Retriever(library, encoder), Journal(args.jobs),
-                args.job_id or uuid.uuid4().hex, spec, mode=args.mode, interrupt_after=args.interrupt_after)
+            result = run_job(
+                library,
+                Retriever(library, encoder),
+                Journal(args.jobs),
+                args.job_id or uuid.uuid4().hex,
+                spec,
+                mode=args.mode,
+                interrupt_after=args.interrupt_after,
+            )
             print(json.dumps(result, ensure_ascii=False, indent=2))
         finally:
             if encoder:
@@ -101,4 +146,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

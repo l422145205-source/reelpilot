@@ -1,0 +1,5 @@
+OS: Windows
+Python: 3.13.9
+80 passed in 24.98s
+JUnit SHA256: 305e824a723786ae99376849298c200754149c93da5be9bdb73204d506373da3
+Full raw JUnit/log and test media stay in local scratch. Reproduce: python scripts/validate_runtime.py

@@ -12,11 +12,12 @@
 
 ## 项目重点
 
-v0.2 补齐规划前的持久请求回执、跨实例容量核对、失败追溯与过期请求保护；最终结果清单也采用所有权校验后的原子发布。[设计与可复现实验](docs/runtime-reliability.md) · [代码追问入口](docs/interview-walkthrough.md) · [项目索引](docs/portfolio.md)
+v0.3 深化长任务运行机制：持久取消与截止时间、可选进程隔离、完成/取消的事务化裁决，以及真实进程强杀后的恢复。[控制机制与取舍](docs/runtime-controls.md) · [真实故障实验](docs/runtime-fault-lab.md) · [代码追问入口](docs/interview-walkthrough.md)
 
 - **时间对齐的多模态索引**：Whisper 词级时间戳、六秒窗口、中点帧；Qwen3-VL-Embedding-2B 构建画面、对白、联合内容三种索引，保留素材哈希、时间区间和授权来源。
 - **有约束的 Agent 工具链**：Qwen3-0.6B + LM Format Enforcer 生成 Schema 约束目标；Beam Search 在时长上限、片段数和不重叠约束下编译 `EditPlan`，独立校验后才执行固定参数的 FFmpeg 工具。
 - **可恢复执行**：SQLite 幂等请求、所有权租约、心跳与阶段日志；owner 校验和原子文件发布阻止过期 worker 覆盖结果，重试复用哈希验证后的产物。
+- **可终止的任务运行**：取消意图持久化，排队等待纳入尝试 deadline；独立 worker 采用启动门、受控进程树、双路有界日志，终止确认与最终提交均有明确状态规则。线程模式保留模型复用，进程模式提供本地终止边界。
 - **有对照的方案选择**：比较 BM25、三种向量视图和 RRF，保留逐条排名和错误案例。模型加载严格检查 checkpoint keys，索引 fingerprint 不匹配时拒绝使用。
 - **完整交互**：FastAPI 工作台支持画面/对白检索、原片定位、生成进度、结果播放与剪辑计划 JSON 导出。
 
@@ -49,6 +50,8 @@ pytest
 ```
 
 FFmpeg 可执行文件由 `imageio-ffmpeg` 依赖提供，无需写入系统目录。应用默认只绑定本机地址。
+
+需要逐任务进程隔离时，运行 `reelpilot serve --collection data/demo --execution-backend process --request-timeout 60`。界面支持取消当前任务；`POST /api/jobs/{job_id}/cancel` 返回的是取消意图接收结果，需轮询到终态。线程中的阻塞模型调用不能立即抢占；进程模式则每次冷加载模型。[接口语义与平台差异](docs/runtime-controls.md)
 
 ## 运行真实模型与公开素材
 
@@ -88,11 +91,24 @@ reelpilot serve --collection data/index --jobs data/jobs --embedding-model .runt
 
 完成三次真实媒体运行，包括一次渲染后主动中断再恢复；该次日志记录渲染只执行一次，恢复命中缓存。v0.2 在原有 CPU 测试上补充请求容量、规划失败持久化、跨实例竞争和最终清单发布的恢复测试。测试结果见 Actions 与 [本地日志](reports/career_hardening_tests.txt)。详见[实验报告](docs/experiments.md)、[原始排名](reports/retrieval_pilot.json)、[真实运行日志](reports/real_runs.json)。
 
+### v0.3 运行机制实验
+
+真实强杀分别发生在渲染提交后、最终清单替换后但 SQL 提交前；两次恢复都复用已验证的渲染，render 提交次数保持 1。另验证真实 FFmpeg 运行中的取消/超时、监督进程自身死亡后的子进程退出，以及每路 5 MiB 输出只保留 64 KiB 的管道控制。取消与完成另做 20 组事务竞争测试。实验使用原创合成视频，无模型效果或生产故障率声明。
+
+```bash
+python scripts/validate_runtime.py
+python scripts/measure_runtime.py --samples 5
+```
+
+[测试摘要](reports/runtime_depth_tests.txt) · [逐项故障证据](reports/runtime_fault_validation.json) · [线程/进程开销原始样本](reports/runtime_backend_benchmark.json)。CPU 开销对照不加载模型，不能替代 GPU 推理或生产吞吐测试；具体注入方法、测试替身和限制见[实验说明](docs/runtime-fault-lab.md)。
+
 ## 实现边界
 
 固定窗口与单帧可能漏掉短动作或截断台词；当前不做镜头边界检测。小模型仍会扩写需求，真实预告片实验中城市目标召回了室内全息场景。结构验证保证来源和执行约束，**不证明画面语义、审美或叙事质量**。最终选片需要审片。
 
 可恢复执行不是 exactly-once；进程崩溃可能重跑工具。当前是单实例本地服务，没有多租户、鉴权或公网部署加固。Ollama 后端已实现，但本次未进行服务实测。Docker 示例未在本机完成构建验证。
+
+进程隔离用于可信工具的生命周期控制，不是安全沙箱。Windows Job Object 与 POSIX 进程组/父进程轮询的保证不同；取消本地 worker 也不保证远端服务停止计算。文件改名与 SQLite 提交之间的恢复测试不等于断电一致性验证。
 
 ## 进一步阅读
 

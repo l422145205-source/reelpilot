@@ -19,7 +19,7 @@ def media_library(tmp_path_factory):
 
 
 def test_real_media_render_interrupt_resume_and_corruption_repair(media_library, tmp_path):
-    journal = Journal(tmp_path/"jobs")
+    journal = Journal(tmp_path / "jobs")
     spec = explicit_spec(Brief(text="forest;robot", budget_seconds=8))
     retriever = Retriever(media_library)
     with pytest.raises(RuntimeError, match="controlled interruption"):
@@ -27,9 +27,9 @@ def test_real_media_render_interrupt_resume_and_corruption_repair(media_library,
     assert journal.get("recovery")["status"] == "failed"
     result = run_job(media_library, retriever, journal, "recovery", spec, mode="lexical")
     assert result["status"] == "complete"
-    assert abs(result["media"]["duration"]-8) < 0.25
+    assert abs(result["media"]["duration"] - 8) < 0.25
     assert next(s for s in journal.get("recovery")["stages"] if s["stage"] == "render")["attempts"] == 1
-    output = journal.root/"recovery/output.mp4"
+    output = journal.root / "recovery/output.mp4"
     output.write_bytes(b"corrupt")
     run_job(media_library, retriever, journal, "recovery", spec, mode="lexical")
     assert probe(output)["width"] == 640
@@ -37,7 +37,7 @@ def test_real_media_render_interrupt_resume_and_corruption_repair(media_library,
 
 
 def test_api_source_seek_search_and_completed_output(media_library, tmp_path):
-    app = create_app(media_library.root, tmp_path/"api-jobs")
+    app = create_app(media_library.root, tmp_path / "api-jobs")
     with TestClient(app) as client:
         assert client.get("/").status_code == 200
         assert client.get("/api/health").json()["dense_configured"] is False
@@ -58,24 +58,29 @@ def test_api_source_seek_search_and_completed_output(media_library, tmp_path):
         assert client.post("/api/jobs", json=request).status_code == 409
 
 
-def test_final_manifest_is_fenced_and_recoverable(media_library,tmp_path,monkeypatch):
+def test_final_manifest_is_fenced_and_recoverable(media_library, tmp_path, monkeypatch):
     from reelpilot.journal import BusyJob
-    journal=Journal(tmp_path/'final-fence')
-    spec=explicit_spec(Brief(text='forest;robot',budget_seconds=8))
-    retriever=Retriever(media_library)
-    publish=journal.publish
-    def steal(job,owner,temporary,destination):
-        if destination.name=='result.json':
+
+    journal = Journal(tmp_path / "final-fence")
+    spec = explicit_spec(Brief(text="forest;robot", budget_seconds=8))
+    retriever = Retriever(media_library)
+    finalize = journal.finalize
+
+    def steal(job, owner, temporary, destination, **kwargs):
+        if destination.name == "result.json":
             with journal.connect() as db:
-                db.execute('UPDATE jobs SET owner=?,lease_until=? WHERE id=?',
-                           ('successor',time.time()+60,job))
-        return publish(job,owner,temporary,destination)
-    monkeypatch.setattr(journal,'publish',steal)
+                db.execute(
+                    "UPDATE jobs SET owner=?,lease_until=? WHERE id=?", ("successor", time.time() + 60, job)
+                )
+        return finalize(job, owner, temporary, destination, **kwargs)
+
+    monkeypatch.setattr(journal, "finalize", steal)
     with pytest.raises(BusyJob):
-        run_job(media_library,retriever,journal,'fence',spec,mode='lexical')
-    assert not (journal.root/'fence/result.json').exists()
-    assert journal.get('fence')['status']=='running'
-    with journal.connect() as db:db.execute('UPDATE jobs SET lease_until=0 WHERE id=?',('fence',))
-    monkeypatch.setattr(journal,'publish',publish)
-    assert run_job(media_library,retriever,journal,'fence',spec,mode='lexical')['status']=='complete'
-    assert next(s for s in journal.get('fence')['stages'] if s['stage']=='render')['attempts']==1
+        run_job(media_library, retriever, journal, "fence", spec, mode="lexical")
+    assert not (journal.root / "fence/result.json").exists()
+    assert journal.get("fence")["status"] == "running"
+    with journal.connect() as db:
+        db.execute("UPDATE jobs SET lease_until=0 WHERE id=?", ("fence",))
+    monkeypatch.setattr(journal, "finalize", finalize)
+    assert run_job(media_library, retriever, journal, "fence", spec, mode="lexical")["status"] == "complete"
+    assert next(s for s in journal.get("fence")["stages"] if s["stage"] == "render")["attempts"] == 1

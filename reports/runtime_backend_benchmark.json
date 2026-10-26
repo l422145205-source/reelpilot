@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-26",
+  "environment": {
+    "os": "Windows",
+    "python": "3.13.9",
+    "machine": "AMD64"
+  },
+  "workload": {
+    "source": "original synthetic video",
+    "output_budget_seconds": 8,
+    "goals": "forest;robot",
+    "mode": "lexical",
+    "provider": "explicit",
+    "models_loaded": false,
+    "workers_per_app": 1,
+    "samples_per_backend": 5,
+    "excluded_warmups_per_backend": 1,
+    "measurement": "HTTP POST until committed complete; separate worker-reap observation"
+  },
+  "warmups": {
+    "thread": {
+      "complete_seconds": 0.7716524999996182,
+      "worker_reaped_seconds": 0.77298310000333,
+      "video_seconds": 8.021333,
+      "render_commits": 1
+    },
+    "process": {
+      "complete_seconds": 1.5413374999916414,
+      "worker_reaped_seconds": 1.6066151999984868,
+      "video_seconds": 8.021333,
+      "render_commits": 1
+    }
+  },
+  "samples": {
+    "thread": [
+      {
+        "complete_seconds": 0.7855692000011913,
+        "worker_reaped_seconds": 0.7869676999980584,
+        "video_seconds": 8.021333,
+        "render_commits": 1
+      },
+      {
+        "complete_seconds": 0.8492071999935433,
+        "worker_reaped_seconds": 0.8507572999951662,
+        "video_seconds": 8.021333,
+        "render_commits": 1
+      },
+      {
+        "complete_seconds": 0.8112054000084754,
+        "worker_reaped_seconds": 0.8122721999970963,
+        "video_seconds": 8.021333,
+        "render_commits": 1
+      },
+      {
+        "complete_seconds": 0.848108999998658,
+        "worker_reaped_seconds": 0.8491562999988673,
+        "video_seconds": 8.021333,
+        "render_commits": 1
+      },
+      {
+        "complete_seconds": 0.7768402000074275,
+        "worker_reaped_seconds": 0.7779129000118701,
+        "video_seconds": 8.021333,
+        "render_commits": 1
+      }
+    ],
+    "process": [
+      {
+        "complete_seconds": 1.686046399991028,
+        "worker_reaped_seconds": 1.758883299989975,
+        "video_seconds": 8.021333,
+        "render_commits": 1
+      },
+      {
+        "complete_seconds": 1.506369499998982,
+        "worker_reaped_seconds": 1.5746723000047496,
+        "video_seconds": 8.021333,
+        "render_commits": 1
+      },
+      {
+        "complete_seconds": 1.7376246999920113,
+        "worker_reaped_seconds": 1.7867543999891495,
+        "video_seconds": 8.021333,
+        "render_commits": 1
+      },
+      {
+        "complete_seconds": 3.6210112999979174,
+        "worker_reaped_seconds": 3.6905319999932544,
+        "video_seconds": 8.021333,
+        "render_commits": 1
+      },
+      {
+        "complete_seconds": 1.6162107000127435,
+        "worker_reaped_seconds": 1.7018915000080597,
+        "video_seconds": 8.021333,
+        "render_commits": 1
+      }
+    ]
+  },
+  "median_complete_seconds": {
+    "thread": 0.8112054000084754,
+    "process": 1.686046399991028
+  },
+  "process_minus_thread_median_seconds": 0.8748409999825526,
+  "limitations": [
+    "single local CPU workload",
+    "no GPU model loading or inference",
+    "not production throughput or SLA",
+    "poll interval and filesystem cache affect timing"
+  ]
+}

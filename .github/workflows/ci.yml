@@ -2,10 +2,16 @@ name: CPU contracts and media pipeline
 on: [push, pull_request]
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python: ['3.11', '3.12']
+        include:
+          - os: ubuntu-latest
+            python: '3.11'
+          - os: ubuntu-latest
+            python: '3.12'
+          - os: windows-latest
+            python: '3.12'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
