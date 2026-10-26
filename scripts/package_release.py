@@ -10,7 +10,9 @@ TEXT_SUFFIXES = {".py", ".toml", ".yml", ".md", ".json", ".html", ".css", ".js",
 TOP = ["README.md", "pyproject.toml", "LICENSE", "THIRD_PARTY.md", ".gitignore", "Dockerfile", ".dockerignore"]
 REPORTS = ["corpus.json", "retrieval_pilot.json", "real_planner.json", "real_runs.json", "validation.json",
            "admission_validation.json", "career_hardening_tests.txt",
-           "runtime_fault_validation.json", "runtime_backend_benchmark.json", "runtime_depth_tests.txt"]
+           "runtime_fault_validation.json", "runtime_backend_benchmark.json", "runtime_depth_tests.txt",
+           "resource_validation.json", "resource_depth_tests.txt", "model_resource_experiment.json",
+           "generation_control.json"]
 
 
 def build():

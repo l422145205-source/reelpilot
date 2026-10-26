@@ -261,16 +261,22 @@ def test_supervisor_reaps_running_ffmpeg_before_control_ack(real_library, tmp_pa
 def test_actual_supervisor_death_removes_owned_worker_and_ffmpeg(real_library, tmp_path):
     j = Journal(tmp_path / "jobs")
     q = Admission(j, ttl=2, interval=0.2)
-    ticket = q.reserve("parent-death", {"test": "parent death"}, timeout_seconds=30)
     # Deliberately no enclosing job/session here: killing just the supervisor must
     # trigger its own containment/watchdog, rather than a test harness tree kill.
     parent = OwnedProcess(
-        [sys.executable, "-B", str(HELPER.with_name("runtime_parent.py"))],
+        [
+            sys.executable,
+            "-B",
+            str(HELPER.with_name("runtime_parent.py")),
+            str(tmp_path / "parent-ready.txt"),
+        ],
         gated=True,
         isolate=False,
         env=source_env(),
     )
     try:
+        wait_for(lambda: (tmp_path / "parent-ready.txt").exists())
+        ticket = q.reserve("parent-death", {"test": "parent death"}, timeout_seconds=30)
         parent.send(
             (
                 json.dumps(
@@ -284,7 +290,14 @@ def test_actual_supervisor_death_removes_owned_worker_and_ffmpeg(real_library, t
                 + "\n"
             ).encode()
         )
-        pids = wait_for(lambda: marker(j.root / ticket.job / "fault-marker.json"))
+
+        def checkpoint():
+            if parent.process.poll() is not None:
+                parent.close()
+                raise AssertionError("probe supervisor exited: " + parent.stderr.value()[-1500:])
+            return marker(j.root / ticket.job / "fault-marker.json")
+
+        pids = wait_for(checkpoint)
         assert not process_exited(pids["worker_pid"]) and not process_exited(pids["tool_pid"])
         start = time.monotonic()
         parent.terminate_tree()  # Only our directly created supervisor PID.

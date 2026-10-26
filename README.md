@@ -12,12 +12,13 @@
 
 ## 项目重点
 
-v0.3 深化长任务运行机制：持久取消与截止时间、可选进程隔离、完成/取消的事务化裁决，以及真实进程强杀后的恢复。[控制机制与取舍](docs/runtime-controls.md) · [真实故障实验](docs/runtime-fault-lab.md) · [代码追问入口](docs/interview-walkthrough.md)
+v0.4 深化模型资源管理：取消感知的 FIFO 入口、有界查询缓存与同请求计算合并、可选规划器驻留、生成步控制，以及服务退出后恢复。[模型资源设计与证据](docs/model-resources.md) · [运行控制](docs/runtime-controls.md) · [代码追问入口](docs/interview-walkthrough.md)
 
 - **时间对齐的多模态索引**：Whisper 词级时间戳、六秒窗口、中点帧；Qwen3-VL-Embedding-2B 构建画面、对白、联合内容三种索引，保留素材哈希、时间区间和授权来源。
 - **有约束的 Agent 工具链**：Qwen3-0.6B + LM Format Enforcer 生成 Schema 约束目标；Beam Search 在时长上限、片段数和不重叠约束下编译 `EditPlan`，独立校验后才执行固定参数的 FFmpeg 工具。
 - **可恢复执行**：SQLite 幂等请求、所有权租约、心跳与阶段日志；owner 校验和原子文件发布阻止过期 worker 覆盖结果，重试复用哈希验证后的产物。
 - **可终止的任务运行**：取消意图持久化，排队等待纳入尝试 deadline；独立 worker 采用启动门、受控进程树、双路有界日志，终止确认与最终提交均有明确状态规则。线程模式保留模型复用，进程模式提供本地终止边界。
+- **受控的模型资源**：关键词检索和向量缓存命中绕过模型入口；未命中查询按 FIFO 申请资源，同键请求共用一次计算。缓存限制条目与计费字节，等待者各自响应取消。可选驻留规划权重，每次重新创建解码状态。
 - **有对照的方案选择**：比较 BM25、三种向量视图和 RRF，保留逐条排名和错误案例。模型加载严格检查 checkpoint keys，索引 fingerprint 不匹配时拒绝使用。
 - **完整交互**：FastAPI 工作台支持画面/对白检索、原片定位、生成进度、结果播放与剪辑计划 JSON 导出。
 
@@ -101,6 +102,21 @@ python scripts/measure_runtime.py --samples 5
 ```
 
 [测试摘要](reports/runtime_depth_tests.txt) · [逐项故障证据](reports/runtime_fault_validation.json) · [线程/进程开销原始样本](reports/runtime_backend_benchmark.json)。CPU 开销对照不加载模型，不能替代 GPU 推理或生产吞吐测试；具体注入方法、测试替身和限制见[实验说明](docs/runtime-fault-lab.md)。
+
+### v0.4 模型资源与退出实验
+
+本地完整验证为 102 项通过，含旧故障回归及真实 FFmpeg 退出后用原请求重启恢复。随机初始化的 6384 参数 CPU Transformer 另验证实际生成循环：第 4 个 forward 触发取消，部分输出不接受；同键并发向量探针将 8 次基线 forward 合并为 1 次。它只证明调用与控制机制接通，不代表 Qwen 模型质量或 GPU 加速。
+
+受控回调对照与 500 查询容量抖动另存原始数据，清楚标注注入延迟；默认缓存上限 256 条、16 MiB 计费字节，并非显存或 RSS 上限。规划器驻留默认关闭，开启需要额外内存。详细方法、失败定位与边界见[资源实验说明](docs/model-resources.md)。
+
+```bash
+python scripts/validate_resources.py
+python scripts/measure_model_resources.py
+# 已安装 models 依赖时，下面的探针不下载权重
+python scripts/validate_generation_control.py
+```
+
+[最新测试摘要](reports/resource_depth_tests.txt) · [资源验证与进程恢复](reports/resource_validation.json) · [真实微型模型探针](reports/generation_control.json) · [受控对照](reports/model_resource_experiment.json)
 
 ## 实现边界
 

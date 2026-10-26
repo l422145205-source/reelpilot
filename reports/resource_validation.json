@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-26",
+  "environment": {
+    "os": "Windows",
+    "python": "3.13.9"
+  },
+  "tests": {
+    "passed": 102,
+    "failed_or_skipped": 0,
+    "junit_sha256": "e63d604fc8280bc80a27bdb238df1a10e0ca7409330e5c4a6aaf38104405473e"
+  },
+  "cases": [
+    {
+      "case": "cancel_running_ffmpeg",
+      "instrumentation": "trusted long-running FFmpeg worker",
+      "control_to_ack_seconds": 0.03555000000051223,
+      "worker_exited_before_ack": true,
+      "ffmpeg_exited_before_ack": true,
+      "status": "cancelled"
+    },
+    {
+      "case": "real_process_success",
+      "seconds": 1.4925904999981867,
+      "status": "complete"
+    },
+    {
+      "case": "render_committed",
+      "fault": "OS hard kill",
+      "expiry": "elapsed request lease",
+      "lease_wait_seconds": 0.9979883000050904,
+      "recovery_seconds": 0.7094432000012603,
+      "render_commits": 1,
+      "uncommitted_result_served": false,
+      "status": "complete"
+    },
+    {
+      "case": "result_replaced_before_commit",
+      "fault": "OS hard kill",
+      "expiry": "elapsed request lease",
+      "lease_wait_seconds": 0.00585680000949651,
+      "recovery_seconds": 2.647646999990684,
+      "render_commits": 1,
+      "uncommitted_result_served": false,
+      "status": "complete"
+    },
+    {
+      "case": "supervisor_hard_kill",
+      "fault": "kill direct supervisor only",
+      "mechanism": "Windows Job Object",
+      "descendant_exit_seconds": 0.06321020000905264,
+      "worker_exited": true,
+      "ffmpeg_exited": true
+    },
+    {
+      "case": "timeout_running_ffmpeg",
+      "instrumentation": "trusted long-running FFmpeg worker",
+      "control_to_ack_seconds": 0.3223969999962719,
+      "worker_exited_before_ack": true,
+      "ffmpeg_exited_before_ack": true,
+      "status": "timed_out"
+    }
+  ],
+  "pipe_capture": {
+    "bytes_written_per_stream": 5242880,
+    "bytes_retained_per_stream": 65536,
+    "verified_by": "test_pipe_flood_is_drained_with_bounded_tail"
+  },
+  "coverage_notes": [
+    "real media, SQLite and HTTP handlers; no models loaded",
+    "crash recovery waits for actual request lease expiry; no manual lease SQL edit",
+    "deadline during FFmpeg is set to now+0.25s after startup, then expires by elapsed time",
+    "queued deadline expires by elapsed time without SQL edits",
+    "slow FFmpeg entry point is a trusted test worker; production supervisor is unchanged",
+    "unit tests also cover synthetic lease states and blocked model doubles",
+    "process-crash tests do not establish disk-power-loss atomicity or production scale"
+  ],
+  "version": "0.4.0",
+  "resource_cases": [
+    {
+      "case": "real_ffmpeg_drain_restart",
+      "shutdown_to_interrupted_seconds": 0.05831940000643954,
+      "worker_exited": true,
+      "ffmpeg_exited": true,
+      "restart_status": "complete",
+      "request_attempts": 2,
+      "instrumentation": "trusted long-running real FFmpeg worker; production supervisor and request controls"
+    }
+  ],
+  "scope": [
+    "bounded namespace-aware LRU and single-flight cancellation ownership",
+    "FIFO model admission with cancellation and bounded waiters",
+    "lexical search bypasses GPU gate",
+    "retained planner weights, no cached plan answers",
+    "real FFmpeg shutdown acknowledgment and original-request recovery",
+    "cooperative model doubles; tiny real Transformers generation validated separately"
+  ]
+}

@@ -17,11 +17,12 @@ from threading import Event, Thread
 from .library import digest, stable_hash, within
 from .schema import Identifier
 from pydantic import TypeAdapter
-from .control import BusyJob, TaskCancelled, DeadlineExceeded, guard_request, terminal_status
+from .control import BusyJob, TaskCancelled, DeadlineExceeded, ServiceDraining, guard_request, terminal_status
 
 
 class Journal:
-    def __init__(self, root: Path):
+    def __init__(self, root: Path, *, runtime_check=None):
+        self.runtime_check = runtime_check if runtime_check is not None else lambda: None
         self.root = root.resolve()
         self.root.mkdir(parents=True, exist_ok=True)
         self.db = self.root / "journal.sqlite"
@@ -130,7 +131,7 @@ class Journal:
             while not stop.wait(interval):
                 try:
                     self.renew(job, owner, ttl)
-                except (BusyJob, TaskCancelled, DeadlineExceeded):
+                except (BusyJob, TaskCancelled, DeadlineExceeded, ServiceDraining):
                     self.event(job, "lease_lost")
                     return
 
@@ -148,6 +149,7 @@ class Journal:
             self._owned(db, job, owner)
 
     def _owned(self, db, job, owner):
+        self.runtime_check()
         row = db.execute("SELECT owner,lease_until,request_owner FROM jobs WHERE id=?", (job,)).fetchone()
         if not row or row["owner"] != owner or row["lease_until"] < time.time():
             raise BusyJob("worker lease expired or was replaced")

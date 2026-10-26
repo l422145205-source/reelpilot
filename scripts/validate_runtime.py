@@ -14,10 +14,18 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def summarize(scratch, xml, log, out):
+def summarize(
+    scratch,
+    xml,
+    log,
+    out,
+    *,
+    summary_name="runtime_depth_tests.txt",
+    reproduce="python scripts/validate_runtime.py",
+):
     suite = ET.parse(xml).getroot()
     cases = list(suite.iter("testcase"))
-    failures = sum(bool(list(c)) for c in cases)
+    failures = sum(any(c.find(tag) is not None for tag in ["failure", "error", "skipped"]) for c in cases)
     rows = [json.loads(p.read_text(encoding="utf-8")) for p in scratch.rglob("runtime-evidence.json")]
     required = {
         "real_process_success",
@@ -57,22 +65,18 @@ def summarize(scratch, xml, log, out):
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, indent=2), encoding="utf-8")
     summary = re.search(r"\d+ passed[^\r\n]*", log)
-    out.with_name("runtime_depth_tests.txt").write_text(
+    out.with_name(summary_name).write_text(
         f"OS: {platform.system()}\nPython: {platform.python_version()}\n"
         + (summary.group(0) if summary else f"{len(cases)} passed")
         + f"\nJUnit SHA256: {report['tests']['junit_sha256']}\n"
-        + "Full raw JUnit/log and test media stay in local scratch. Reproduce: python scripts/validate_runtime.py\n",
+        + f"Full raw JUnit/log and test media stay in local scratch. Reproduce: {reproduce}\n",
         encoding="utf-8",
     )
     return report
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--scratch", type=Path, default=ROOT / "data/runtime-validation")
-    parser.add_argument("--out", type=Path, default=ROOT / "reports/runtime_fault_validation.json")
-    args = parser.parse_args()
-    root = args.scratch.resolve()
+def run_suite(root):
+    root = root.resolve()
     root.mkdir(parents=True, exist_ok=True)
     token = uuid.uuid4().hex
     scratch = root / ("cases-" + token)
@@ -110,6 +114,15 @@ def main():
     if result.returncode:
         print(raw[-6000:])
         raise SystemExit(result.returncode)
+    return scratch, xml, raw
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--scratch", type=Path, default=ROOT / "data/runtime-validation")
+    parser.add_argument("--out", type=Path, default=ROOT / "reports/runtime_fault_validation.json")
+    args = parser.parse_args()
+    scratch, xml, raw = run_suite(args.scratch)
     report = summarize(scratch, xml, raw, args.out)
     print(json.dumps({"passed": report["tests"]["passed"], "real_fault_cases": len(report["cases"])}))
 

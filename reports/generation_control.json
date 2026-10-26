@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-26",
+  "os": "Windows",
+  "python": "3.13.9",
+  "torch": "2.11.0",
+  "transformers": "4.57.1",
+  "model": "locally initialized random GPT2, 1 layer, 16 hidden, CPU",
+  "weights_downloaded": false,
+  "parameters": 6384,
+  "normal_new_tokens": 8,
+  "normal_control_checks": 8,
+  "cancel_forward_steps": 4,
+  "partial_output_accepted": false,
+  "planner_closed": true,
+  "embedding_singleflight": {
+    "baseline_forwards": 8,
+    "shared_forwards": 1,
+    "requests": 8,
+    "coalesced_waiters": 7,
+    "separate_return_buffers": true,
+    "provider": "actual random GPT2 hidden-state forward on CPU",
+    "instrumentation": "barrier before forward forces concurrent misses; no inference speed claim"
+  },
+  "limitations": [
+    "generation-interface contract only",
+    "not a pretrained Qwen checkpoint validation",
+    "tokenizer is a controlled adapter; no semantic or GPU latency claim"
+  ]
+}

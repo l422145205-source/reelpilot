@@ -67,3 +67,9 @@ v0.3 将 pipeline owner 关联至 request owner，提交时同时检查取消标
 | 执行与恢复 | `admission.py`、`journal.py`、`pipeline.py`、`control.py` |
 | 进程监督与工具 | `execution.py`、`supervisor.py`、`worker.py`、`processes.py`、`media.py` |
 | 接口和交互 | `api.py`、`static/`、`cli.py` |
+
+## v0.4 模型生命周期
+
+`ModelResources` 管理模型执行入口、延迟加载、查询缓存和关闭顺序。Retriever 使用代理编码器，fingerprint 在不加载权重时即可核对；缓存未命中才申请模型资源并加载编码器。关键词检索不申请该资源。同键 flight 中每个等待者保留自身控制权限，返回向量独立复制。
+
+规划器默认仍按次释放，可选择保留权重；Schema 解码器按请求重建。Transformers 生成步检查 guard，服务退出后排队回执保存 interrupted，模型对象等待活动调用与缓存填充结束后关闭。详细的容量计费、协作取消边界和真实/受控实验区分见 [模型资源设计](model-resources.md)。

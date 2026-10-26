@@ -43,6 +43,13 @@ def main():
                 default=180,
                 help="attempt deadline in seconds, including queue wait (0,3600]",
             )
+
+            p.add_argument(
+                "--retain-planner", action="store_true", help="keep local planner resident; uses extra memory"
+            )
+            p.add_argument("--model-waiters", type=int, default=16)
+            p.add_argument("--query-cache-entries", type=int, default=256)
+            p.add_argument("--query-cache-mib", type=int, default=16)
         else:
             p.add_argument("brief")
             p.add_argument("--budget", type=float, default=18)
@@ -98,6 +105,10 @@ def main():
             device=args.device,
             execution_backend=args.execution_backend,
             request_timeout=args.request_timeout,
+            retain_planner=args.retain_planner,
+            model_waiters=args.model_waiters,
+            query_cache_entries=args.query_cache_entries,
+            query_cache_bytes=args.query_cache_mib * 1024 * 1024,
         )
         uvicorn.run(app, host=args.host, port=args.port)
     elif args.command == "edit":

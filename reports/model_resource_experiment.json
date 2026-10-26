@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-26",
+  "os": "Windows",
+  "python": "3.13.9",
+  "workload": {
+    "kind": "controlled CPU callbacks, no model weights",
+    "encode_delay_seconds": 0.025,
+    "planner_construct_delay_seconds": 0.02,
+    "planner_spec_delay_seconds": 0.005,
+    "same_key_burst_requests": 8,
+    "burst_repetitions": 5,
+    "planner_repetitions": 3
+  },
+  "query_bursts": {
+    "serial_no_query_cache": [
+      {
+        "seconds": 0.2060370000108378,
+        "compute_calls": 8,
+        "requests": 8,
+        "coalesced_waiters": 0
+      },
+      {
+        "seconds": 0.20463420001033228,
+        "compute_calls": 8,
+        "requests": 8,
+        "coalesced_waiters": 0
+      },
+      {
+        "seconds": 0.2053894999990007,
+        "compute_calls": 8,
+        "requests": 8,
+        "coalesced_waiters": 0
+      },
+      {
+        "seconds": 0.2049224999936996,
+        "compute_calls": 8,
+        "requests": 8,
+        "coalesced_waiters": 0
+      },
+      {
+        "seconds": 0.20572560001164675,
+        "compute_calls": 8,
+        "requests": 8,
+        "coalesced_waiters": 0
+      }
+    ],
+    "bounded_singleflight": [
+      {
+        "seconds": 0.027200600001378916,
+        "compute_calls": 1,
+        "requests": 8,
+        "coalesced_waiters": 7
+      },
+      {
+        "seconds": 0.027064300011261366,
+        "compute_calls": 1,
+        "requests": 8,
+        "coalesced_waiters": 7
+      },
+      {
+        "seconds": 0.02736910000385251,
+        "compute_calls": 1,
+        "requests": 8,
+        "coalesced_waiters": 7
+      },
+      {
+        "seconds": 0.0271237000124529,
+        "compute_calls": 1,
+        "requests": 8,
+        "coalesced_waiters": 7
+      },
+      {
+        "seconds": 0.02756499999668449,
+        "compute_calls": 1,
+        "requests": 8,
+        "coalesced_waiters": 7
+      }
+    ]
+  },
+  "planner_sequences": {
+    "ephemeral": [
+      {
+        "seconds": 0.12865660000534263,
+        "model_constructs": 5,
+        "model_closes": 5,
+        "requests": 5,
+        "per_request_constraints_preserved": true
+      },
+      {
+        "seconds": 0.12784019998798613,
+        "model_constructs": 5,
+        "model_closes": 5,
+        "requests": 5,
+        "per_request_constraints_preserved": true
+      },
+      {
+        "seconds": 0.12993789999745786,
+        "model_constructs": 5,
+        "model_closes": 5,
+        "requests": 5,
+        "per_request_constraints_preserved": true
+      }
+    ],
+    "retained": [
+      {
+        "seconds": 0.04843850000179373,
+        "model_constructs": 1,
+        "model_closes": 1,
+        "requests": 5,
+        "per_request_constraints_preserved": true
+      },
+      {
+        "seconds": 0.048421600004076026,
+        "model_constructs": 1,
+        "model_closes": 1,
+        "requests": 5,
+        "per_request_constraints_preserved": true
+      },
+      {
+        "seconds": 0.048066100003779866,
+        "model_constructs": 1,
+        "model_closes": 1,
+        "requests": 5,
+        "per_request_constraints_preserved": true
+      }
+    ]
+  },
+  "cache_churn": {
+    "unique_queries": 500,
+    "vector_dimensions": 64,
+    "peak_accounted_bytes": 8062,
+    "entries": 29,
+    "accounted_bytes": 8062,
+    "pending": 0,
+    "max_entries": 32,
+    "max_bytes": 8192,
+    "max_pending": 16,
+    "hits": 0,
+    "misses": 500,
+    "coalesced": 0,
+    "evictions": 471,
+    "oversize_not_retained": 0
+  },
+  "median_burst_seconds": {
+    "serial_no_query_cache": 0.2053894999990007,
+    "bounded_singleflight": 0.027200600001378916
+  },
+  "limitations": [
+    "injected delay isolates scheduling/cache behavior",
+    "not GPU inference performance",
+    "not semantic quality or production throughput",
+    "planner retention is opt-in and costs resident memory"
+  ]
+}

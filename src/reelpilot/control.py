@@ -21,6 +21,14 @@ class ProcessCleanupError(RuntimeError):
     """Termination could not be confirmed; do not acknowledge successful cancellation."""
 
 
+class ServiceDraining(RuntimeError):
+    """Local service is stopping; an uncompleted request can be resumed elsewhere."""
+
+
+class ResourceBusy(RuntimeError):
+    """Bounded model-resource waiting room is full."""
+
+
 def guard_request(db, job, owner, *, now=None):
     if owner is None:
         return
@@ -54,6 +62,8 @@ def requested_error(row, now):
 
 
 def terminal_status(error):
+    if isinstance(error, ServiceDraining):
+        return "interrupted"
     if isinstance(error, TaskCancelled):
         return "cancelled"
     if isinstance(error, DeadlineExceeded):

@@ -9,6 +9,10 @@ from .retrieval import Retriever
 
 @contextmanager
 def checked_lock(lock, check):
+    if hasattr(lock, "lease"):
+        with lock.lease(check):
+            yield
+        return
     if lock is None:
         check()
         yield
@@ -33,6 +37,7 @@ def run_request(
     device="cuda",
     retriever_factory=None,
     model_lock=None,
+    resources=None,
     pipeline=run_job
 ):
     journal = ticket.admission.journal
@@ -48,8 +53,11 @@ def run_request(
             raise ValueError("no local planning model configured")
         from .planner import transformers_spec
 
-        with checked_lock(model_lock, ticket.guard):
-            spec = transformers_spec(body.brief, planner_path, device=device)
+        if resources is not None:
+            spec = resources.plan(body.brief, check=ticket.guard)
+        else:
+            with checked_lock(model_lock, ticket.guard):
+                spec = transformers_spec(body.brief, planner_path, device=device, check=ticket.guard)
     elif body.provider == "ollama":
         from .planner import ollama_spec
 
@@ -62,14 +70,14 @@ def run_request(
     encoder = None
     try:
         if retriever_factory is not None:
-            retriever = retriever_factory(body.mode)
+            retriever = retriever_factory(body.mode, check=ticket.guard)
         else:
             if body.mode != "lexical":
                 if not encoder_path:
                     raise ValueError("no query encoding model configured")
                 from .encoders import QwenEncoder
 
-                encoder = QwenEncoder(encoder_path, device=device)
+                encoder = QwenEncoder(encoder_path, device=device, check=ticket.guard)
             retriever = Retriever(library, encoder)
         return pipeline(
             library, retriever, journal, ticket.job, spec, mode=body.mode, request_owner=ticket.owner

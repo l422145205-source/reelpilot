@@ -50,3 +50,19 @@ ReelPilot 将自然语言或明确目标变成可核验的素材检索与粗剪�
 清理失败还有两种情况：尚未完成时，终止确认错误记为 failed，不能假报 cancelled；已经提交完成时，记录 postcommit_error，不能悄悄丢掉错误，也不能倒改已发布结果。对应 `test_unconfirmed_process_cleanup...` 与 `test_postcommit_cleanup_error...`。
 
 复现入口：`python scripts/validate_runtime.py`；追踪完整链路时按 `api.execute → run_request/run_isolated → run_job → Journal.finalize` 阅读。[原始故障摘要](../reports/runtime_fault_validation.json) 与 [实验细节](runtime-fault-lab.md) 能逐项对应上述回答。
+
+## v0.4 模型资源追问
+
+**LRU 为什么还不够？** LRU 限制保留结果，但多个同时未命中的请求仍会重复推理。Single-flight 让同键请求等待一次计算；向量复制隔离调用方修改，fingerprint 隔离模型空间。它不同于合并不同查询的动态 batching，也没有改变模型输出质量。
+
+**负责计算的请求取消，其他请求怎么办？** 每个等待者使用自己的 guard；取消等待者不改变负责人，负责人取消则活跃等待者重新竞争。错误与在途状态清除，后续请求可以重试，不能将取消异常永久缓存。看 `test_cancelled_leader_is_replaced_by_live_follower`。
+
+**缓存命中为什么不排模型锁？** 已有 CPU 向量无需再次占用 GPU；lexical 也不需要模型。资源入口只覆盖实际模型工作，避免旧版关键词检索被慢规划器挡住。FIFO 针对该入口的等待者，不代表所有请求按同一顺序完成。
+
+**驻留规划器会不会把上一条答案带到下一条？** 驻留的是权重和 tokenizer；每个请求新建 Schema 解码状态，本次约束重新校验。它没有缓存 QuerySpec。默认不驻留规划器，开启要承担持续内存占用，不能把受控构造次数对照说成真实 GPU 吞吐提升。
+
+**为什么不直接 cancel_futures 后退出？** 尚未执行的回执仍需要持久终态与心跳清理。退出时关闭资源入口，让既有回执走 guard 保存 interrupted，再等待实际调用与缓存填充结束后关闭模型。阻塞 forward 或远端调用仍可能拖延线程退出；进程后端提供更明确的本地终止边界。
+
+**如何证明实际接了模型？** 微型随机 GPT2 探针使用真实 generate 和 forward，记录 4 步取消与 8→1 次计算合并。它的 tokenizer/同步屏障是受控适配，不是 Qwen 权重、Schema 生成质量或模型效果评测。先说明这个边界，再展示代码与记录。
+
+复现：`scripts/validate_resources.py`、`scripts/validate_generation_control.py`；实现入口：`resources.py`、`planner.TransformersPlanner`、`encoders.embedding_identity` 和 `api.lifespan`。[设计与原始证据](model-resources.md)

@@ -55,6 +55,7 @@ class Admission:
                     db.execute(f"ALTER TABLE submissions ADD COLUMN {name} {kind}")
 
     def reserve(self, job: str, body: dict, *, timeout_seconds=None):
+        self.journal.runtime_check()
         if timeout_seconds is not None and (
             isinstance(timeout_seconds, bool) or not math.isfinite(timeout_seconds) or timeout_seconds <= 0
         ):
@@ -180,6 +181,7 @@ class Ticket:
         self._thread = None
 
     def guard(self):
+        self.admission.journal.runtime_check()
         with self.admission.journal.connect() as db:
             guard_request(db, self.job, self.owner)
 

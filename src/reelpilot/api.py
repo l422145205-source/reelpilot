@@ -3,7 +3,8 @@ from __future__ import annotations
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
 from pathlib import Path
-from threading import RLock
+from threading import Event
+import asyncio
 from typing import Literal
 import math
 import uuid
@@ -19,6 +20,8 @@ from .library import Library
 from .pipeline import run_job
 from .retrieval import Retriever
 from .schema import Identifier, StrictModel, JobRequest
+from .resources import ModelResources, VectorCache
+from .control import ResourceBusy, ServiceDraining
 
 
 class Search(StrictModel):
@@ -41,9 +44,15 @@ def create_app(
     max_inflight=8,
     execution_backend="thread",
     request_timeout=180,
+    retain_planner=False,
+    model_waiters=16,
+    query_cache_entries=256,
+    query_cache_bytes=16 * 1024 * 1024,
 ):
     if execution_backend not in ("thread", "process"):
         raise ValueError("unknown execution backend")
+    if execution_backend == "process" and retain_planner:
+        raise ValueError("planner retention is available only in the thread backend")
     if (
         isinstance(request_timeout, bool)
         or not math.isfinite(request_timeout)
@@ -53,55 +62,85 @@ def create_app(
     if workers < 1:
         raise ValueError("workers must be positive")
     library = Library(collection)
-    journal = Journal(jobs)
+    closing = Event()
+
+    def runtime_check():
+        if closing.is_set():
+            raise ServiceDraining("service shutdown; retry original request after restart")
+
+    journal = Journal(jobs, runtime_check=runtime_check)
     admission = Admission(journal, capacity=max_inflight)
     pool = ThreadPoolExecutor(max_workers=workers, thread_name_prefix="reelpilot")
-    encoder_lock = RLock()
-    encoder = None
-    model_lock = RLock()
 
-    class LockedRetriever:
-        def __init__(self, inner):
-            self.inner, self.views = inner, inner.views
+    def load_encoder():
+        from .encoders import QwenEncoder
 
-        def search(self, *args, **kwargs):
-            with model_lock:
-                return self.inner.search(*args, **kwargs)
+        return QwenEncoder(encoder_path, device=device, check=runtime_check)
+
+    def load_planner():
+        from .planner import TransformersPlanner
+
+        return TransformersPlanner(planner_path, device=device)
+
+    def call_planner(brief, *, check):
+        from .planner import transformers_spec
+
+        return transformers_spec(brief, planner_path, device=device, check=check)
+
+    fingerprint = None
+    if encoder_path:
+        from .encoders import embedding_identity
+
+        _, fingerprint = embedding_identity(encoder_path)
+    resources = ModelResources(
+        encoder_factory=load_encoder if encoder_path else None,
+        fingerprint=fingerprint,
+        planner_factory=load_planner if planner_path else None,
+        planner_call=call_planner if planner_path else None,
+        cache_planner=retain_planner,
+        stop=closing,
+        max_waiters=model_waiters,
+        cache=VectorCache(
+            max_entries=query_cache_entries, max_bytes=query_cache_bytes, max_pending=model_waiters
+        ),
+    )
 
     @asynccontextmanager
     async def lifespan(app):
-        yield
-        pool.shutdown(wait=True)
-        if encoder is not None:
-            encoder.close()
+        try:
+            yield
+        finally:
+            resources.begin_shutdown()
+            # Run queued receipts through their guard so they become interrupted,
+            # rather than abandoning Futures and losing their terminal acknowledgment.
+            await asyncio.to_thread(pool.shutdown, wait=True)
+            await asyncio.to_thread(resources.close)
 
-    app = FastAPI(title="ReelPilot", version="0.3.0", lifespan=lifespan)
+    app = FastAPI(title="ReelPilot", version="0.4.0", lifespan=lifespan)
+    app.state.resources = resources
 
-    def retriever(mode):
-        nonlocal encoder
-        if mode != "lexical":
-            if not encoder_path:
-                raise ValueError("this server has no multimodal query model configured")
-            with model_lock, encoder_lock:
-                if encoder is None:
-                    from .encoders import QwenEncoder
-
-                    encoder = QwenEncoder(encoder_path, device=device)
-        return LockedRetriever(Retriever(library, encoder))
+    def retriever(mode, *, check=None):
+        runtime_check()
+        if mode == "lexical":
+            return Retriever(library)
+        if not encoder_path:
+            raise ValueError("this server has no multimodal query model configured")
+        return Retriever(library, resources.proxy(check))
 
     @app.get("/api/health")
     def health():
         return {
-            "status": "ok",
+            "status": "draining" if closing.is_set() else "ok",
             "collection_hash": library.hash,
             "assets": len(library.assets),
             "segments": len(library.segments),
             "dense_configured": bool(encoder_path),
             "planner_configured": bool(planner_path),
-            "version": "0.3.0",
+            "version": "0.4.0",
             "max_inflight": max_inflight,
             "workers": workers,
             "execution_backend": execution_backend,
+            "model_resources": resources.stats(),
         }
 
     @app.get("/api/library")
@@ -123,6 +162,10 @@ def create_app(
                     )
                 ],
             }
+        except ResourceBusy as exc:
+            raise HTTPException(429, str(exc), headers={"Retry-After": "1"}) from exc
+        except ServiceDraining as exc:
+            raise HTTPException(503, str(exc)) from exc
         except (ValueError, RuntimeError) as exc:
             raise HTTPException(422, str(exc)) from exc
 
@@ -135,7 +178,7 @@ def create_app(
                     ticket,
                     body.model_dump(exclude={"job_id"}, exclude_none=True),
                     library,
-                    model_lock=model_lock,
+                    model_lock=resources.gate,
                     encoder_path=encoder_path,
                     planner_path=planner_path,
                     ollama_model=ollama_model,
@@ -149,7 +192,8 @@ def create_app(
                     body,
                     library,
                     retriever_factory=retriever,
-                    model_lock=model_lock,
+                    resources=resources,
+                    model_lock=resources.gate,
                     planner_path=planner_path,
                     ollama_model=ollama_model,
                     device=device,
@@ -173,6 +217,8 @@ def create_app(
                 body.model_dump(exclude={"job_id"}, exclude_none=True),
                 timeout_seconds=body.timeout_seconds or request_timeout,
             )
+        except ServiceDraining as exc:
+            raise HTTPException(503, str(exc)) from exc
         except ValueError as exc:
             raise HTTPException(409, str(exc)) from exc
         except BusyJob as exc:
