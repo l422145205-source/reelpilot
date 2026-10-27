@@ -82,6 +82,22 @@ def installed_package():
         data = resources.files("reelpilot").joinpath("static", name).read_bytes()
         require(bool(data), f"Installed static resource is empty: {name}")
         static[name] = {"bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
+    sql = resources.files("reelpilot").joinpath("analytics.sql").read_bytes()
+    require(b'CREATE VIEW IF NOT EXISTS daily_metrics' in sql, 'Installed analytics SQL is missing')
+    from reelpilot.analytics import ingest_journal, report_warehouse
+    from reelpilot.admission import Admission
+    from reelpilot.journal import Journal
+
+    scratch = Path.cwd()/('installed-analytics-'+uuid.uuid4().hex)
+    journal = Journal(scratch/'source')
+    Admission(journal).reserve('installed-check', {'provider': 'explicit', 'mode': 'lexical'}).finish()
+    warehouse = scratch/'warehouse.sqlite'
+    ingest_journal(journal.db, warehouse, source_id='wheel-smoke')
+    repeat = ingest_journal(journal.db, warehouse, source_id='wheel-smoke')
+    require(report_warehouse(warehouse)['daily'][0]['logical_requests'] == 1,
+            'Installed analytics ingestion/report failed')
+    require(repeat['inserted_events'] == repeat['changed_requests'] == 0,
+            'Installed analytics replay duplicated facts')
     return {
         "version": distribution.version,
         "module_in_current_venv": True,
@@ -90,6 +106,8 @@ def installed_package():
         "system_site_packages": False,
         "cwd_outside_checkout": True,
         "static": static,
+        "analytics_sql_sha256": hashlib.sha256(sql).hexdigest(),
+        "analytics_ingest_and_replay": True,
     }
 
 

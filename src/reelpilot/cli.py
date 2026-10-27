@@ -7,6 +7,14 @@ import uuid
 def main():
     parser = argparse.ArgumentParser(description="ReelPilot multimodal video editing agent")
     sub = parser.add_subparsers(dest="command", required=True)
+    analytics = sub.add_parser("analytics", help="incremental journal facts and SQL operational metrics")
+    analytics_sub = analytics.add_subparsers(dest="analytics_command", required=True)
+    collect = analytics_sub.add_parser("ingest", help="read one journal without changing its data")
+    collect.add_argument("--source", type=Path, required=True)
+    collect.add_argument("--warehouse", type=Path, required=True)
+    collect.add_argument("--source-id", required=True)
+    summary = analytics_sub.add_parser("report", help="print aggregate metrics as JSON")
+    summary.add_argument("--warehouse", type=Path, required=True)
     check = sub.add_parser("selfcheck", help="verify real media, recovery and repair; no models or downloads")
     check.add_argument("--workspace", type=Path, default=Path("data/selfcheck"))
     demo = sub.add_parser("demo", help="create original synthetic media, no model/download required")
@@ -60,7 +68,15 @@ def main():
             p.add_argument("--job-id", default=None)
             p.add_argument("--interrupt-after", choices=["verify", "render"])
     args = parser.parse_args()
-    if args.command == "selfcheck":
+    if args.command == "analytics":
+        from .analytics import ingest_journal, report_warehouse
+
+        if args.analytics_command == "ingest":
+            result = ingest_journal(args.source, args.warehouse, source_id=args.source_id)
+        else:
+            result = report_warehouse(args.warehouse)
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+    elif args.command == "selfcheck":
         from .selfcheck import check_installation
 
         directory, report = check_installation(args.workspace)

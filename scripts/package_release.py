@@ -7,13 +7,13 @@ import tempfile
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-TEXT_SUFFIXES = {".py", ".toml", ".yml", ".md", ".json", ".html", ".css", ".js", ".txt"}
+TEXT_SUFFIXES = {".py", ".sql", ".toml", ".yml", ".md", ".json", ".html", ".css", ".js", ".txt"}
 TOP = ["README.md", "README.en.md", "CONTRIBUTING.md", "pyproject.toml", "LICENSE", "THIRD_PARTY.md", ".gitignore", "Dockerfile", "Dockerfile.mcp", ".dockerignore", "glama.json"]
 REPORTS = ["corpus.json", "retrieval_pilot.json", "real_planner.json", "real_runs.json", "validation.json",
            "admission_validation.json", "career_hardening_tests.txt",
            "runtime_fault_validation.json", "runtime_backend_benchmark.json", "runtime_depth_tests.txt",
            "resource_validation.json", "resource_depth_tests.txt", "model_resource_experiment.json",
-           "generation_control.json", "mcp_validation.json"]
+           "generation_control.json", "mcp_validation.json", "analytics_validation.json"]
 
 
 def build():

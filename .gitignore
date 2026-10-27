@@ -14,6 +14,7 @@ data/runtime-validation/
 data/runtime-benchmark/
 data/resource-validation/
 data/selfcheck/
+data/analytics-validation/
 *.sqlite*
 *.partial*
 *.log

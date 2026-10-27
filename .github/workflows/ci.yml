@@ -23,6 +23,12 @@ jobs:
       - run: python -m pip install -e '.[dev,mcp]'
       - run: python -m compileall -q src scripts
       - run: pytest
+      - name: Reconcile real original-media tasks into SQL marts
+        run: python scripts/validate_analytics.py --output dist/analytics-validation.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: analytics-${{ matrix.os }}-${{ matrix.python }}
+          path: dist/analytics-validation.json
   distribution:
     name: Installed wheel and MCP container (${{ matrix.os }})
     runs-on: ${{ matrix.os }}

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "reelpilot"
-version = "0.5.1"
+version = "0.6.0"
 description = "Time-grounded multimodal retrieval and recoverable video-editing agent"
 readme = "README.md"
 license = "MIT"
@@ -30,7 +30,7 @@ reelpilot-mcp = "reelpilot.mcp_server:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-reelpilot = ["static/*"]
+reelpilot = ["static/*", "analytics.sql"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
