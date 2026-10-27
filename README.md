@@ -14,6 +14,8 @@
 
 ## 项目重点
 
+v0.5.1 增加普通 wheel 安装与独立 MCP 容器的分发验证：从源码包逐文件核验后构建，使用干净环境检查入口、静态资源与真实 stdio 协议；容器检查在 CI 中执行。[方法与结果入口](docs/distribution.md)
+
 v0.5 新增本地 **MCP v2 工具接入**：默认只读检索与状态查询；显式开启后复用原任务队列提交/取消剪辑。真实 stdio 子进程断开后可通过原任务 ID 找回结果，同请求重放复用已验证产物。[接入与协议证据](docs/mcp.md)
 
 v0.4 深化模型资源管理：取消感知的 FIFO 入口、有界查询缓存与同请求计算合并、可选规划器驻留、生成步控制，以及服务退出后恢复。[模型资源设计与证据](docs/model-resources.md) · [运行控制](docs/runtime-controls.md) · [代码追问入口](docs/interview-walkthrough.md)

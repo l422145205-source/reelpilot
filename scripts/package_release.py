@@ -3,11 +3,12 @@ from pathlib import Path
 import hashlib
 import json
 import re
+import tempfile
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 TEXT_SUFFIXES = {".py", ".toml", ".yml", ".md", ".json", ".html", ".css", ".js", ".txt"}
-TOP = ["README.md", "README.en.md", "CONTRIBUTING.md", "pyproject.toml", "LICENSE", "THIRD_PARTY.md", ".gitignore", "Dockerfile", ".dockerignore"]
+TOP = ["README.md", "README.en.md", "CONTRIBUTING.md", "pyproject.toml", "LICENSE", "THIRD_PARTY.md", ".gitignore", "Dockerfile", "Dockerfile.mcp", ".dockerignore", "glama.json"]
 REPORTS = ["corpus.json", "retrieval_pilot.json", "real_planner.json", "real_runs.json", "validation.json",
            "admission_validation.json", "career_hardening_tests.txt",
            "runtime_fault_validation.json", "runtime_backend_benchmark.json", "runtime_depth_tests.txt",
@@ -16,8 +17,10 @@ REPORTS = ["corpus.json", "retrieval_pilot.json", "real_planner.json", "real_run
 
 
 def build():
-    stage = ROOT/"dist/public"
-    stage.mkdir(parents=True, exist_ok=True)
+    # A new staging tree cannot retain files removed since the previous release.
+    # Keep prior generated trees intact; publication consumers use this manifest.
+    (ROOT/"dist").mkdir(parents=True, exist_ok=True)
+    stage = Path(tempfile.mkdtemp(prefix="public-", dir=ROOT/"dist"))
     paths = [ROOT/p for p in TOP]
     for folder in ["src", "tests", "scripts", "docs", ".github", "examples"]:
         paths.extend(p for p in (ROOT/folder).rglob("*") if p.is_file()
@@ -44,14 +47,14 @@ def build():
         entries.append({"path": relative, "bytes": len(payload),
             "sha256": hashlib.sha256(payload).hexdigest(),
             "git_blob_sha": hashlib.sha1(f"blob {len(payload)}\0".encode()+payload).hexdigest()})
-    manifest = {"project": "ReelPilot", "files": entries,
+    manifest = {"project": "ReelPilot", "staging_directory": stage.relative_to(ROOT).as_posix(), "files": entries,
                 "excluded": ["model weights", "full movies", "local indexes/jobs", "credentials", "private resumes"]}
     (ROOT/"dist/publication_manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     archive = ROOT/"dist/reelpilot-source.zip"
     with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as z:
         for row in entries:
             z.write(stage/row["path"], "reelpilot/"+row["path"])
-    print(json.dumps({"files": len(entries), "public_bytes": sum(x["bytes"] for x in entries),
+    print(json.dumps({"files": len(entries), "staging_directory": stage.relative_to(ROOT).as_posix(), "public_bytes": sum(x["bytes"] for x in entries),
                       "zip_bytes": archive.stat().st_size}))
 
 

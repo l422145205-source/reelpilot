@@ -1,5 +1,7 @@
 name: CPU contracts and media pipeline
 on: [push, pull_request]
+permissions:
+  contents: read
 jobs:
   test:
     runs-on: ${{ matrix.os }}
@@ -21,3 +23,31 @@ jobs:
       - run: python -m pip install -e '.[dev,mcp]'
       - run: python -m compileall -q src scripts
       - run: pytest
+  distribution:
+    name: Installed wheel and MCP container (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python scripts/package_release.py
+      - name: Verify wheel and build the stdio container on Linux
+        if: runner.os == 'Linux'
+        run: python scripts/verify_release_install.py --archive dist/reelpilot-source.zip --manifest dist/publication_manifest.json --work-root "${{ runner.temp }}/reelpilot-distribution" --output dist/distribution-installed.json --build-docker
+      - name: Verify wheel on Windows
+        if: runner.os == 'Windows'
+        run: python scripts/verify_release_install.py --archive dist/reelpilot-source.zip --manifest dist/publication_manifest.json --work-root "${{ runner.temp }}/reelpilot-distribution" --output dist/distribution-installed.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: distribution-${{ runner.os }}
+          path: |
+            dist/distribution-installed.json
+            dist/publication_manifest.json
+            dist/reelpilot-source.zip
+            dist/*.whl

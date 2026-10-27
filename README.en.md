@@ -8,6 +8,11 @@
 
 Turn a brief such as “find a forest and a robot” into a checked edit plan and a playable video. Models propose search goals; deterministic code owns source intervals, duration limits, file publication and tool execution.
 
+Normal-wheel installation and a separate stdio MCP container have a dedicated
+[distribution validation path](docs/distribution.md): the source archive is hash
+checked before building, and discovery runs outside the editable checkout. The
+linked CI run and JSON artifacts distinguish completed checks from configuration.
+
 ![Workbench](examples/workbench.png)
 
 ## Try it without a GPU or model download
