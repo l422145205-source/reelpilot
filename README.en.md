@@ -1,5 +1,7 @@
 # ReelPilot
 
+**v0.7 attempt-bound tracing:** durable attempt identities connect planning and stage observations across thread/process backends. SQL distinguishes recorded failure recovery, successful replay and ownership supersession; hard-killed operations keep unknown durations instead of fabricated zeros. Completion joins the existing publication transaction. [Design, real-media/OS-kill evidence and walkthrough](docs/attempt-tracing.md)
+
 **v0.6 operational analytics:** a read-only journal extractor and transactional SQLite marts separate logical requests, admission attempts, stage commits and cache-reuse events. Sequence watermarks, hash-based snapshot UPSERTs and atomic checkpoints support replay and rollback. A real original-media lab reconciles 6 logical requests, 8 accepted attempts and 2 render commits. No model-quality or production success-rate claim is made. [Schema, SQL, reproduction and interview walkthrough](docs/analytics.md)
 
 **A time-grounded video retrieval and rough-cut agent with recoverable execution.**

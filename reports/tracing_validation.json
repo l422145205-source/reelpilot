@@ -1,0 +1,422 @@
+{
+  "schema_version": 1,
+  "version": "0.7.0",
+  "status": "passed",
+  "environment": {
+    "platform": "Windows",
+    "python": "3.12.14"
+  },
+  "tests": {
+    "passed": 170,
+    "failures": 0,
+    "skipped": 0
+  },
+  "cases": [
+    {
+      "case": "os_kill_during_controlled_span",
+      "models_loaded": false,
+      "worker_killed": true,
+      "open_duration_unknown": true,
+      "metrics": {
+        "schema_version": 1,
+        "available": true,
+        "accepted_attempts": 2,
+        "recorded_attempts": 2,
+        "superseded_attempts": 1,
+        "complete_attempts": 1,
+        "failed_or_interrupted_attempts": 0,
+        "unconfirmed_attempts": 0,
+        "unrecorded_legacy_attempts": 0,
+        "transitions": {
+          "completed_after_recorded_failure": 0,
+          "completed_after_recorded_success": 0,
+          "completed_after_supersession": 1,
+          "attempts_with_unknown_predecessor": 0
+        },
+        "admission_to_first_phase_wall_wait": {
+          "measured_attempts": 1,
+          "mean_seconds": 0.5830776691436768,
+          "min_seconds": 0.5830776691436768,
+          "max_seconds": 0.5830776691436768
+        },
+        "clock_reversal_attempts": 0,
+        "operations": [
+          {
+            "operation": "planning",
+            "outcome": "open",
+            "observations": 1,
+            "measured_observations": 0,
+            "mean_seconds": null,
+            "total_observed_seconds": null
+          }
+        ],
+        "scope": [
+          "attempt transitions require consecutive recorded ordinals",
+          "superseded means ownership replaced, not confirmed physical worker exit",
+          "operation durations are local monotonic wall time, including waits",
+          "open spans have unknown duration and are excluded from duration aggregates",
+          "admission wait uses wall clock and includes process startup/model-gate wait",
+          "no token, billing, pure model compute, or semantic quality measurements"
+        ]
+      }
+    },
+    {
+      "case": "real_recovery_and_successful_replay",
+      "render_commits": 2,
+      "media": {
+        "width": 640,
+        "height": 360,
+        "duration": 8.021333
+      },
+      "metrics": {
+        "schema_version": 1,
+        "available": true,
+        "accepted_attempts": 4,
+        "recorded_attempts": 4,
+        "superseded_attempts": 0,
+        "complete_attempts": 3,
+        "failed_or_interrupted_attempts": 1,
+        "unconfirmed_attempts": 0,
+        "unrecorded_legacy_attempts": 0,
+        "transitions": {
+          "completed_after_recorded_failure": 1,
+          "completed_after_recorded_success": 1,
+          "completed_after_supersession": 0,
+          "attempts_with_unknown_predecessor": 0
+        },
+        "admission_to_first_phase_wall_wait": {
+          "measured_attempts": 4,
+          "mean_seconds": 0.013624191284179688,
+          "min_seconds": 0.010735273361206055,
+          "max_seconds": 0.01661539077758789
+        },
+        "clock_reversal_attempts": 0,
+        "operations": [
+          {
+            "operation": "compile",
+            "outcome": "cache_hit",
+            "observations": 2,
+            "measured_observations": 2,
+            "mean_seconds": 0.013410950001343735,
+            "total_observed_seconds": 0.02682190000268747
+          },
+          {
+            "operation": "compile",
+            "outcome": "success",
+            "observations": 2,
+            "measured_observations": 2,
+            "mean_seconds": 0.03930979999859119,
+            "total_observed_seconds": 0.07861959999718238
+          },
+          {
+            "operation": "planning",
+            "outcome": "success",
+            "observations": 4,
+            "measured_observations": 4,
+            "mean_seconds": 0.002432674999909068,
+            "total_observed_seconds": 0.009730699999636272
+          },
+          {
+            "operation": "probe",
+            "outcome": "cache_hit",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.009224699999322183,
+            "total_observed_seconds": 0.009224699999322183
+          },
+          {
+            "operation": "probe",
+            "outcome": "success",
+            "observations": 2,
+            "measured_observations": 2,
+            "mean_seconds": 0.041451600001892075,
+            "total_observed_seconds": 0.08290320000378415
+          },
+          {
+            "operation": "render",
+            "outcome": "cache_hit",
+            "observations": 2,
+            "measured_observations": 2,
+            "mean_seconds": 0.010733700000855606,
+            "total_observed_seconds": 0.021467400001711212
+          },
+          {
+            "operation": "render",
+            "outcome": "success",
+            "observations": 2,
+            "measured_observations": 2,
+            "mean_seconds": 0.5881922000007762,
+            "total_observed_seconds": 1.1763844000015524
+          },
+          {
+            "operation": "retriever_setup",
+            "outcome": "success",
+            "observations": 4,
+            "measured_observations": 4,
+            "mean_seconds": 0.0003138249994663056,
+            "total_observed_seconds": 0.0012552999978652224
+          },
+          {
+            "operation": "verify",
+            "outcome": "cache_hit",
+            "observations": 2,
+            "measured_observations": 2,
+            "mean_seconds": 0.01064944999961881,
+            "total_observed_seconds": 0.02129889999923762
+          },
+          {
+            "operation": "verify",
+            "outcome": "success",
+            "observations": 2,
+            "measured_observations": 2,
+            "mean_seconds": 0.033797450001657126,
+            "total_observed_seconds": 0.06759490000331425
+          }
+        ],
+        "scope": [
+          "attempt transitions require consecutive recorded ordinals",
+          "superseded means ownership replaced, not confirmed physical worker exit",
+          "operation durations are local monotonic wall time, including waits",
+          "open spans have unknown duration and are excluded from duration aggregates",
+          "admission wait uses wall clock and includes process startup/model-gate wait",
+          "no token, billing, pure model compute, or semantic quality measurements"
+        ]
+      }
+    },
+    {
+      "case": "render_committed",
+      "fault": "real OS hard kill after real FFmpeg",
+      "render_commits": 1,
+      "metrics": {
+        "schema_version": 1,
+        "available": true,
+        "accepted_attempts": 2,
+        "recorded_attempts": 2,
+        "superseded_attempts": 1,
+        "complete_attempts": 1,
+        "failed_or_interrupted_attempts": 0,
+        "unconfirmed_attempts": 0,
+        "unrecorded_legacy_attempts": 0,
+        "transitions": {
+          "completed_after_recorded_failure": 0,
+          "completed_after_recorded_success": 0,
+          "completed_after_supersession": 1,
+          "attempts_with_unknown_predecessor": 0
+        },
+        "admission_to_first_phase_wall_wait": {
+          "measured_attempts": 2,
+          "mean_seconds": 0.6486984491348267,
+          "min_seconds": 0.5853054523468018,
+          "max_seconds": 0.7120914459228516
+        },
+        "clock_reversal_attempts": 0,
+        "operations": [
+          {
+            "operation": "compile",
+            "outcome": "cache_hit",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.0066576000026543625,
+            "total_observed_seconds": 0.0066576000026543625
+          },
+          {
+            "operation": "compile",
+            "outcome": "success",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.019441299999016337,
+            "total_observed_seconds": 0.019441299999016337
+          },
+          {
+            "operation": "planning",
+            "outcome": "success",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.0019154000001435634,
+            "total_observed_seconds": 0.0019154000001435634
+          },
+          {
+            "operation": "probe",
+            "outcome": "success",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.023804199998266995,
+            "total_observed_seconds": 0.023804199998266995
+          },
+          {
+            "operation": "render",
+            "outcome": "cache_hit",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.01110079999853042,
+            "total_observed_seconds": 0.01110079999853042
+          },
+          {
+            "operation": "render",
+            "outcome": "success",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.7116310999990674,
+            "total_observed_seconds": 0.7116310999990674
+          },
+          {
+            "operation": "retriever_setup",
+            "outcome": "success",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.0008577000007790048,
+            "total_observed_seconds": 0.0008577000007790048
+          },
+          {
+            "operation": "verify",
+            "outcome": "cache_hit",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.005898200000956422,
+            "total_observed_seconds": 0.005898200000956422
+          },
+          {
+            "operation": "verify",
+            "outcome": "success",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.016368700002203695,
+            "total_observed_seconds": 0.016368700002203695
+          }
+        ],
+        "scope": [
+          "attempt transitions require consecutive recorded ordinals",
+          "superseded means ownership replaced, not confirmed physical worker exit",
+          "operation durations are local monotonic wall time, including waits",
+          "open spans have unknown duration and are excluded from duration aggregates",
+          "admission wait uses wall clock and includes process startup/model-gate wait",
+          "no token, billing, pure model compute, or semantic quality measurements"
+        ]
+      }
+    },
+    {
+      "case": "result_replaced_before_commit",
+      "fault": "real OS hard kill after real FFmpeg",
+      "render_commits": 1,
+      "metrics": {
+        "schema_version": 1,
+        "available": true,
+        "accepted_attempts": 2,
+        "recorded_attempts": 2,
+        "superseded_attempts": 1,
+        "complete_attempts": 1,
+        "failed_or_interrupted_attempts": 0,
+        "unconfirmed_attempts": 0,
+        "unrecorded_legacy_attempts": 0,
+        "transitions": {
+          "completed_after_recorded_failure": 0,
+          "completed_after_recorded_success": 0,
+          "completed_after_supersession": 1,
+          "attempts_with_unknown_predecessor": 0
+        },
+        "admission_to_first_phase_wall_wait": {
+          "measured_attempts": 2,
+          "mean_seconds": 1.549289345741272,
+          "min_seconds": 0.6824138164520264,
+          "max_seconds": 2.4161648750305176
+        },
+        "clock_reversal_attempts": 0,
+        "operations": [
+          {
+            "operation": "compile",
+            "outcome": "cache_hit",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.010071199998492375,
+            "total_observed_seconds": 0.010071199998492375
+          },
+          {
+            "operation": "compile",
+            "outcome": "success",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.03358160000061616,
+            "total_observed_seconds": 0.03358160000061616
+          },
+          {
+            "operation": "planning",
+            "outcome": "success",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.0021960000012768432,
+            "total_observed_seconds": 0.0021960000012768432
+          },
+          {
+            "operation": "probe",
+            "outcome": "cache_hit",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.007209699997474672,
+            "total_observed_seconds": 0.007209699997474672
+          },
+          {
+            "operation": "probe",
+            "outcome": "success",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.028093400000216207,
+            "total_observed_seconds": 0.028093400000216207
+          },
+          {
+            "operation": "render",
+            "outcome": "cache_hit",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.006193200002599042,
+            "total_observed_seconds": 0.006193200002599042
+          },
+          {
+            "operation": "render",
+            "outcome": "success",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.7007964000003994,
+            "total_observed_seconds": 0.7007964000003994
+          },
+          {
+            "operation": "retriever_setup",
+            "outcome": "success",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.0008095000011962838,
+            "total_observed_seconds": 0.0008095000011962838
+          },
+          {
+            "operation": "verify",
+            "outcome": "cache_hit",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.005268600001727464,
+            "total_observed_seconds": 0.005268600001727464
+          },
+          {
+            "operation": "verify",
+            "outcome": "success",
+            "observations": 1,
+            "measured_observations": 1,
+            "mean_seconds": 0.0158837000017229,
+            "total_observed_seconds": 0.0158837000017229
+          }
+        ],
+        "scope": [
+          "attempt transitions require consecutive recorded ordinals",
+          "superseded means ownership replaced, not confirmed physical worker exit",
+          "operation durations are local monotonic wall time, including waits",
+          "open spans have unknown duration and are excluded from duration aggregates",
+          "admission wait uses wall clock and includes process startup/model-gate wait",
+          "no token, billing, pure model compute, or semantic quality measurements"
+        ]
+      }
+    }
+  ],
+  "scope": [
+    "CPU contract and original-media execution; no pretrained models loaded",
+    "hard-kill records preserve partial measurements instead of inventing durations",
+    "no production scale, semantic quality, token or billing claims"
+  ]
+}

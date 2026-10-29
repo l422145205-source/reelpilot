@@ -18,6 +18,7 @@ from .library import digest, stable_hash, within
 from .schema import Identifier
 from pydantic import TypeAdapter
 from .control import BusyJob, TaskCancelled, DeadlineExceeded, ServiceDraining, guard_request, terminal_status
+from .tracing import SCHEMA as TRACE_SCHEMA, attempt_for, operation_span, update_attempt
 
 
 class Journal:
@@ -44,6 +45,7 @@ class Journal:
               job TEXT PRIMARY KEY, input_hash TEXT NOT NULL, body TEXT NOT NULL);
             """
             )
+            db.executescript(TRACE_SCHEMA)
             db.execute("BEGIN IMMEDIATE")
             columns = {r["name"] for r in db.execute("PRAGMA table_info(jobs)")}
             if "request_owner" not in columns:
@@ -146,7 +148,7 @@ class Journal:
 
     def guard(self, job, owner):
         with self.connect() as db:
-            self._owned(db, job, owner)
+            return self._owned(db, job, owner)
 
     def _owned(self, db, job, owner):
         self.runtime_check()
@@ -167,7 +169,13 @@ class Journal:
                 raise BusyJob("worker lost job ownership")
 
     def stage(self, job, owner, name, inputs, operation):
-        self.guard(job, owner)
+        ownership = self.guard(job, owner)
+        with self.connect() as db:
+            attempt_id = attempt_for(db, job, ownership['request_owner'])
+        with operation_span(self, attempt_id, name) as observed:
+            return self._stage(job, owner, name, inputs, operation, observed)
+
+    def _stage(self, job, owner, name, inputs, operation, observed):
         hashed = stable_hash(inputs)
         with self.connect() as db:
             row = db.execute("SELECT * FROM stages WHERE job=? AND stage=?", (job, name)).fetchone()
@@ -179,6 +187,7 @@ class Journal:
             )
             if valid:
                 self.event(job, "cache_hit", name)
+                observed.outcome = 'cache_hit'
                 return cached
         self.event(job, "stage_started", name)
         result = operation()
@@ -239,6 +248,7 @@ class Journal:
                     "INSERT INTO events(job,event,detail,at) VALUES (?,?,?,?)",
                     (job, "request_complete", "atomic finalization", now),
                 )
+                update_attempt(db, job, row['request_owner'], 'complete', now)
 
     def abandon_request(self, job, request_owner, error):
         """Only call after a supervised worker and its descendants have exited."""

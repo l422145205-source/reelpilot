@@ -7,6 +7,8 @@ import uuid
 def main():
     parser = argparse.ArgumentParser(description="ReelPilot multimodal video editing agent")
     sub = parser.add_subparsers(dest="command", required=True)
+    traces = sub.add_parser('trace-report', help='summarize attempt lineage and operation timing; no content export')
+    traces.add_argument('--source', type=Path, required=True)
     analytics = sub.add_parser("analytics", help="incremental journal facts and SQL operational metrics")
     analytics_sub = analytics.add_subparsers(dest="analytics_command", required=True)
     collect = analytics_sub.add_parser("ingest", help="read one journal without changing its data")
@@ -68,7 +70,11 @@ def main():
             p.add_argument("--job-id", default=None)
             p.add_argument("--interrupt-after", choices=["verify", "render"])
     args = parser.parse_args()
-    if args.command == "analytics":
+    if args.command == 'trace-report':
+        from .tracing import trace_report
+
+        print(json.dumps(trace_report(args.source), ensure_ascii=False, indent=2))
+    elif args.command == "analytics":
         from .analytics import ingest_journal, report_warehouse
 
         if args.analytics_command == "ingest":

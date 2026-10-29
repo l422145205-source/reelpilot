@@ -9,7 +9,7 @@ from typing import Literal
 import math
 import uuid
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import Field
@@ -241,6 +241,16 @@ def create_app(
             return admission.cancel(job_id)
         except KeyError:
             raise HTTPException(404, "unknown job")
+
+    @app.get('/api/jobs/{job_id}/attempts')
+    def attempts(job_id: Identifier, after_attempt: int = Query(0,ge=0),
+                 after_span: int = Query(0,ge=0), limit: int = Query(50,ge=1,le=50)):
+        from .tracing import trace_details
+
+        try:
+            return trace_details(journal, job_id, after_attempt=after_attempt, after_span=after_span, limit=limit)
+        except KeyError:
+            raise HTTPException(404, 'unknown job')
 
     @app.get("/api/jobs/{job_id}")
     def job(job_id: str):

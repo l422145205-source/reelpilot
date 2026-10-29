@@ -98,6 +98,10 @@ def installed_package():
             'Installed analytics ingestion/report failed')
     require(repeat['inserted_events'] == repeat['changed_requests'] == 0,
             'Installed analytics replay duplicated facts')
+    from reelpilot.tracing import trace_report
+    trace = trace_report(journal.db)
+    require(trace['recorded_attempts'] == trace['accepted_attempts'] == 1,
+            'Installed attempt ledger/report failed')
     return {
         "version": distribution.version,
         "module_in_current_venv": True,
@@ -108,6 +112,7 @@ def installed_package():
         "static": static,
         "analytics_sql_sha256": hashlib.sha256(sql).hexdigest(),
         "analytics_ingest_and_replay": True,
+        "attempt_ledger_and_report": True,
     }
 
 

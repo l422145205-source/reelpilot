@@ -17,6 +17,7 @@ from pydantic import TypeAdapter
 from .journal import BusyJob, Journal
 from .library import stable_hash
 from .schema import Identifier
+from .tracing import admit_attempt, attempt_for, update_attempt, operation_span
 from .control import (
     TaskCancelled,
     DeadlineExceeded,
@@ -109,6 +110,8 @@ class Admission:
                 "INSERT INTO events(job,event,detail,at) VALUES (?,?,?,?)",
                 (job, "admitted", "durable request receipt", now),
             )
+            ordinal = db.execute('SELECT attempts FROM submissions WHERE job=?', (job,)).fetchone()[0]
+            admit_attempt(db, job, owner, ordinal, now)
         return Ticket(self, job, owner)
 
     def get(self, job):
@@ -154,6 +157,7 @@ class Admission:
                         "error=?,updated=? WHERE job=?",
                         (str(control), now, job),
                     )
+                    update_attempt(db, job, row['owner'], 'timed_out', now)
                 return {"job_id": job, "status": "timed_out", "requested": False}
             if row["lease_until"] < now:
                 db.execute(
@@ -161,6 +165,7 @@ class Admission:
                     "cancel_requested=1,cancel_at=COALESCE(cancel_at,?),updated=? WHERE job=?",
                     (now, now, job),
                 )
+                update_attempt(db, job, row['owner'], 'cancelled', now)
                 return {"job_id": job, "status": "cancelled", "requested": True}
             db.execute(
                 "UPDATE submissions SET cancel_requested=1,cancel_at=COALESCE(cancel_at,?),updated=? "
@@ -180,6 +185,11 @@ class Ticket:
         self.admission, self.job, self.owner = admission, job, owner
         self._stop = Event()
         self._thread = None
+        with self.admission.journal.connect() as db:
+            self.attempt_id = attempt_for(db, job, owner)
+
+    def span(self, operation):
+        return operation_span(self.admission.journal, self.attempt_id, operation)
 
     def guard(self):
         self.admission.journal.runtime_check()
@@ -226,6 +236,7 @@ class Ticket:
             )
             if changed.rowcount != 1:
                 raise BusyJob("stale request cannot update its successor")
+            update_attempt(db, self.job, self.owner, status, now)
         self.admission.journal.event(self.job, "request_" + phase)
 
     def phase(self, phase):
@@ -263,6 +274,7 @@ class Ticket:
                 "INSERT INTO events(job,event,detail,at) VALUES (?,?,?,?)",
                 (self.job, "request_" + status, "", now),
             )
+            update_attempt(db, self.job, self.owner, status, now)
 
     def renew(self):
         now = time.time()

@@ -179,6 +179,19 @@ def test_hard_kill_recovers_verified_render_without_serving_uncommitted_result(r
         assert journal.get("crash")["status"] == queue.get("crash")["status"] == "complete"
         render = next(s for s in journal.get("crash")["stages"] if s["stage"] == "render")
         assert render["attempts"] == 1
+        from reelpilot.tracing import trace_report
+        trace = trace_report(journal.db)
+        assert trace['recorded_attempts'] == 2 and trace['superseded_attempts'] == 1
+        assert trace['transitions']['completed_after_supersession'] == 1
+        assert trace['transitions']['completed_after_recorded_failure'] == 0
+        with journal.connect() as db:
+            attempt_ids = [r[0] for r in db.execute('SELECT attempt_id FROM request_attempts')]
+            assert len(set(attempt_ids)) == 2
+            assert db.execute('SELECT count(*) FROM operation_spans WHERE attempt_id NOT IN '
+                              '(SELECT attempt_id FROM request_attempts)').fetchone()[0] == 0
+        (tmp_path/'trace-evidence.json').write_text(json.dumps({
+            'case':point,'fault':'real OS hard kill after real FFmpeg',
+            'render_commits':render['attempts'],'metrics':trace}),encoding='utf-8')
         with pytest.raises(BusyJob):
             old.guard()
         evidence(
